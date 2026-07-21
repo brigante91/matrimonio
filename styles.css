@@ -825,6 +825,21 @@ body.is-opening-envelope .invitation[hidden] {
   outline-offset: 4px;
 }
 
+.btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
+.rsvp-error {
+  margin: 0.75rem 0 0;
+  text-align: center;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: #9a4a2e;
+}
+
 .rsvp-success {
   text-align: center;
   padding: 2rem 0;

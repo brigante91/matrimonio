@@ -1,4 +1,7 @@
 (() => {
+  // Incolla qui l’URL della web app Google Apps Script (dopo il deploy)
+  const SHEETS_WEBAPP_URL = "";
+
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
   const invitation = document.getElementById("invitation");
@@ -9,6 +12,8 @@
   const attendanceInputs = form.querySelectorAll('input[name="attendance"]');
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
+  const submitBtn = document.getElementById("rsvpSubmit");
+  const errorEl = document.getElementById("rsvpError");
 
   let opened = false;
   let musicStarted = false;
@@ -74,9 +79,7 @@
     document.body.classList.add("is-opening-envelope");
     fadeInMusic();
 
-    // Reveal invitation under the dissolving fullscreen envelope
     invitation.hidden = false;
-    // Force layout so the reveal transition can run
     void invitation.offsetWidth;
     invitation.classList.add("is-revealed");
     scene.classList.add("is-opening");
@@ -134,38 +137,94 @@
   });
   toggleGuestsField();
 
-  form.addEventListener("submit", (event) => {
+  function showError(message) {
+    errorEl.hidden = false;
+    errorEl.textContent = message;
+  }
+
+  function clearError() {
+    errorEl.hidden = true;
+    errorEl.textContent = "";
+  }
+
+  async function sendToGoogleSheet(payload) {
+    if (!SHEETS_WEBAPP_URL) {
+      throw new Error("SHEETS_URL_MISSING");
+    }
+
+    const response = await fetch(SHEETS_WEBAPP_URL, {
+      method: "POST",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await response.text();
+    if (text) {
+      try {
+        const json = JSON.parse(text);
+        if (json.ok === false) throw new Error(json.error || "sheet_error");
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          if (!response.ok) throw new Error("network_error");
+        } else {
+          throw err;
+        }
+      }
+    } else if (!response.ok) {
+      throw new Error("network_error");
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    clearError();
 
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
     const attending = data.get("attendance") === "si";
-    const guests = data.get("guests") || "1";
+    const guests = attending ? String(data.get("guests") || "1") : "";
+    const payload = {
+      name,
+      email: String(data.get("email") || "").trim(),
+      attendance: attending ? "si" : "no",
+      guests,
+      menu: String(data.get("menu") || ""),
+      message: String(data.get("message") || "").trim(),
+    };
 
-    form.hidden = true;
-    success.hidden = false;
-
-    successText.textContent = attending
-      ? `${name}, la tua partecipazione per ${guests} ${Number(guests) === 1 ? "persona" : "persone"} è stata registrata. Non vediamo l'ora di festeggiare con te.`
-      : `${name}, grazie per averci fatto sapere. Ci mancherai, ma terrremo un pensiero speciale per te.`;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Invio in corso…";
 
     try {
-      localStorage.setItem(
-        "wedding-rsvp",
-        JSON.stringify({
-          name,
-          email: data.get("email"),
-          attendance: data.get("attendance"),
-          guests: attending ? guests : null,
-          menu: data.get("menu"),
-          message: data.get("message"),
-          savedAt: new Date().toISOString(),
-        })
-      );
-    } catch {
-      // ignore storage errors
+      await sendToGoogleSheet(payload);
+
+      try {
+        localStorage.setItem(
+          "wedding-rsvp",
+          JSON.stringify({ ...payload, savedAt: new Date().toISOString() })
+        );
+      } catch {
+        // ignore
+      }
+
+      form.hidden = true;
+      success.hidden = false;
+      successText.textContent = attending
+        ? `${name}, la tua partecipazione per ${guests} ${Number(guests) === 1 ? "persona" : "persone"} è stata registrata. Non vediamo l'ora di festeggiare con te.`
+        : `${name}, grazie per averci fatto sapere. Ci mancherai, ma terrremo un pensiero speciale per te.`;
+    } catch (err) {
+      if (err && err.message === "SHEETS_URL_MISSING") {
+        showError("Collegamento al foglio non ancora configurato. Riprova tra poco.");
+      } else {
+        showError("Non siamo riusciti a salvare la risposta. Controlla la connessione e riprova.");
+      }
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Invia partecipazione";
     }
   });
 
