@@ -70,7 +70,7 @@ textarea {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: #f4efe4;
+  background: #faf6ee;
   transition: opacity 1.15s var(--ease-out), visibility 1.15s;
 }
 
