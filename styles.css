@@ -1,26 +1,30 @@
 :root {
-  --ink: #2e2a38;
-  --ink-soft: #5e5670;
-  --glicine: #9b88c4;
-  --glicine-deep: #7463a3;
-  --glicine-soft: #c4b5db;
-  --glicine-mist: #e9e2f4;
-  --blush: #9b88c4;
-  --blush-deep: #7463a3;
-  --sage: #8fa88a;
-  --sage-soft: #b5c6af;
-  --paper: #f7f3ea;
-  --paper-deep: #ebe4d6;
-  --envelope: #f3ead8;
-  --envelope-dark: #e5d9c4;
-  --envelope-light: #faf6ee;
-  --parchment-stain: rgba(180, 150, 90, 0.1);
-  --parchment-edge: rgba(94, 86, 112, 0.22);
+  --ink: #3a342c;
+  --ink-soft: #6a6258;
+  --glicine: #b65c3a;
+  --glicine-deep: #9a4a2e;
+  --glicine-soft: #d4a890;
+  --glicine-mist: #f3e6dc;
+  --blush: #b65c3a;
+  --blush-deep: #9a4a2e;
+  --sage: #7f8f6e;
+  --sage-soft: #a8b59a;
+  --paper: #fcf9f2;
+  --paper-deep: #efe6d6;
+  --envelope: #f7f1e6;
+  --envelope-dark: #e8dcc8;
+  --envelope-light: #fffcf7;
+  --sky: #c9d9e8;
+  --sand: #e6d7c0;
+  --terracotta: #b65c3a;
+  --terracotta-deep: #9a4a2e;
+  --parchment-stain: rgba(182, 92, 58, 0.08);
+  --parchment-edge: rgba(58, 52, 44, 0.18);
   --parchment-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
   --wax: #c9a227;
   --gold: #d4af37;
-  --cream-glow: rgba(255, 252, 245, 0.62);
-  --shadow: rgba(46, 42, 56, 0.16);
+  --cream-glow: rgba(255, 252, 245, 0.7);
+  --shadow: rgba(58, 52, 44, 0.14);
 
   --font-display: "Italianno", cursive;
   --font-serif: "Cormorant Garamond", Georgia, serif;
@@ -46,7 +50,11 @@ body {
   color: var(--ink);
   font-family: var(--font-sans);
   font-weight: 300;
-  background: var(--paper);
+  background:
+    linear-gradient(180deg, rgba(252, 249, 242, 0.92), rgba(252, 249, 242, 0.97)),
+    var(--parchment-noise),
+    var(--paper);
+  background-blend-mode: normal, soft-light, normal;
   overflow-x: hidden;
 }
 
@@ -70,7 +78,7 @@ textarea {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: #faf6ee;
+  background: var(--paper);
   transition: opacity 1.15s var(--ease-out), visibility 1.15s;
 }
 
@@ -360,8 +368,9 @@ textarea {
   padding: clamp(2rem, 6vw, 4rem);
   overflow: hidden;
   background:
-    linear-gradient(180deg, rgba(246, 243, 250, 0.2) 0%, rgba(246, 243, 250, 0.72) 68%, var(--paper) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='%23ddd2ec'/%3E%3Cstop offset='42%25' stop-color='%23c9bddf'/%3E%3Cstop offset='100%25' stop-color='%23b8c7b2'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='800' fill='url(%23sky)'/%3E%3Cellipse cx='180' cy='640' rx='300' ry='210' fill='%239b88c4' opacity='0.22'/%3E%3Cellipse cx='1020' cy='660' rx='320' ry='220' fill='%237463a3' opacity='0.18'/%3E%3Cellipse cx='600' cy='720' rx='520' ry='190' fill='%238fa88a' opacity='0.28'/%3E%3Cellipse cx='160' cy='560' rx='28' ry='16' transform='rotate(-30 160 560)' fill='%23ffffff' opacity='0.85'/%3E%3Cellipse cx='190' cy='545' rx='20' ry='12' fill='%23f8f6fc' opacity='0.9'/%3E%3Ccircle cx='172' cy='552' r='5' fill='%23d4c8e8'/%3E%3Cellipse cx='980' cy='540' rx='26' ry='15' transform='rotate(25 980 540)' fill='%23ffffff' opacity='0.85'/%3E%3Ccircle cx='978' cy='538' r='5' fill='%23c9bddf'/%3E%3Cellipse cx='1040' cy='520' rx='18' ry='11' fill='%23ffffff' opacity='0.8'/%3E%3Cellipse cx='240' cy='500' rx='16' ry='9' fill='%23ffffff' opacity='0.7'/%3E%3Cpath d='M0 540 Q300 470 600 535 T1200 510 L1200 800 L0 800 Z' fill='%239b88c4' opacity='0.16'/%3E%3C/svg%3E");
+    linear-gradient(180deg, rgba(201, 217, 232, 0.35) 0%, rgba(252, 249, 242, 0.55) 42%, var(--paper) 100%),
+    radial-gradient(ellipse 80% 55% at 50% 100%, rgba(230, 215, 192, 0.45), transparent 70%),
+    var(--paper);
   background-size: cover;
   background-position: center;
 }
@@ -514,8 +523,8 @@ textarea {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--glicine);
-  box-shadow: 0 0 0 4px rgba(155, 136, 196, 0.16);
+  background: var(--terracotta);
+  box-shadow: 0 0 0 4px rgba(182, 92, 58, 0.14);
   flex-shrink: 0;
 }
 
@@ -524,8 +533,8 @@ textarea {
   max-width: 36rem;
   text-align: center;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(255, 255, 255, 0.7), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(155, 136, 196, 0.1), transparent 70%);
+    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(255, 252, 247, 0.75), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(182, 92, 58, 0.07), transparent 70%);
 }
 
 .portrait .section__title {
@@ -546,10 +555,10 @@ textarea {
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.95), transparent 45%),
-    linear-gradient(145deg, #fff 0%, var(--glicine-mist) 48%, var(--glicine-soft) 100%);
+    linear-gradient(145deg, #fff 0%, var(--sand) 48%, var(--glicine-soft) 100%);
   box-shadow:
-    0 0 0 1px rgba(155, 136, 196, 0.22),
-    0 18px 50px rgba(116, 99, 163, 0.16);
+    0 0 0 1px rgba(182, 92, 58, 0.16),
+    0 18px 50px rgba(58, 52, 44, 0.1);
 }
 
 .portrait-frame__ring::before {
@@ -591,7 +600,7 @@ textarea {
 
 .story {
   background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(155, 136, 196, 0.12), transparent 70%);
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201, 217, 232, 0.28), transparent 70%);
 }
 
 .details {
@@ -648,13 +657,27 @@ textarea {
   color: var(--ink-soft);
 }
 
+.detail__illustration {
+  margin: 1.35rem 0 0;
+  border: 1px solid rgba(58, 52, 44, 0.12);
+  background: #fffef9;
+  box-shadow: 0 10px 28px rgba(58, 52, 44, 0.08);
+  overflow: hidden;
+}
+
+.detail__illustration img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .detail__map {
   margin-top: 1.25rem;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid rgba(155, 136, 196, 0.22);
-  box-shadow: 0 8px 24px rgba(46, 42, 56, 0.1);
-  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(58, 52, 44, 0.12);
+  box-shadow: 0 8px 24px rgba(58, 52, 44, 0.08);
+  background: rgba(255, 255, 255, 0.55);
 }
 
 .detail__map iframe {
@@ -686,7 +709,7 @@ textarea {
 /* ——— RSVP ——— */
 .rsvp {
   background:
-    linear-gradient(180deg, transparent, rgba(196, 181, 219, 0.16) 18%, rgba(155, 136, 196, 0.12) 100%);
+    linear-gradient(180deg, transparent, rgba(230, 215, 192, 0.28) 18%, rgba(182, 92, 58, 0.08) 100%);
 }
 
 .rsvp .section__text {
@@ -783,9 +806,9 @@ textarea {
   margin-top: 1rem;
   justify-self: center;
   padding: 1rem 2.6rem;
-  border: 1px solid var(--glicine-deep);
-  background: var(--glicine-deep);
-  color: #f8f6fc;
+  border: 1px solid var(--terracotta-deep);
+  background: var(--terracotta-deep);
+  color: #fffaf3;
   font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 400;
@@ -797,9 +820,9 @@ textarea {
 
 .btn:hover {
   background: transparent;
-  color: var(--glicine-deep);
+  color: var(--terracotta-deep);
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(116, 99, 163, 0.16);
+  box-shadow: 0 10px 28px rgba(154, 74, 46, 0.16);
 }
 
 .btn:focus-visible {
