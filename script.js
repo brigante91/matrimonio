@@ -15,6 +15,7 @@
   const musicToggle = document.getElementById("musicToggle");
   const submitBtn = document.getElementById("rsvpSubmit");
   const errorEl = document.getElementById("rsvpError");
+  const countdownEl = document.getElementById("countdown");
 
   let opened = false;
   let musicStarted = false;
@@ -22,8 +23,49 @@
   const previewOpen = previewParam !== null;
   const OPEN_MS = 1500;
   const MUSIC_VOLUME = 0.35;
+  // Cerimonia: 14 luglio 2027 ore 12:00 (ora italiana)
+  const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
 
   document.body.classList.add("is-locked");
+
+  function pad(value) {
+    return String(value).padStart(2, "0");
+  }
+
+  function updateCountdown() {
+    if (!countdownEl) return;
+
+    const diff = Math.max(0, WEDDING_AT - Date.now());
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const daysEl = countdownEl.querySelector('[data-unit="days"]');
+    const hoursEl = countdownEl.querySelector('[data-unit="hours"]');
+    const minutesEl = countdownEl.querySelector('[data-unit="minutes"]');
+    const secondsEl = countdownEl.querySelector('[data-unit="seconds"]');
+
+    if (daysEl) daysEl.textContent = String(days);
+    if (hoursEl) hoursEl.textContent = pad(hours);
+    if (minutesEl) minutesEl.textContent = pad(minutes);
+    if (secondsEl) secondsEl.textContent = pad(seconds);
+
+    countdownEl.classList.toggle("is-complete", diff === 0);
+    countdownEl.setAttribute(
+      "aria-label",
+      diff === 0
+        ? "Il giorno del matrimonio è arrivato"
+        : `Mancano ${days} giorni, ${hours} ore, ${minutes} minuti e ${seconds} secondi`
+    );
+
+    return diff > 0;
+  }
+
+  if (updateCountdown()) {
+    window.setInterval(updateCountdown, 1000);
+  }
 
   function fadeInMusic() {
     if (!bgMusic || musicStarted) return;
