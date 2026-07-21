@@ -11,6 +11,7 @@
   let opened = false;
   const previewParam = new URLSearchParams(window.location.search).get("preview");
   const previewOpen = previewParam !== null;
+  const OPEN_MS = 1500;
 
   document.body.classList.add("is-locked");
 
@@ -19,19 +20,20 @@
     opened = true;
 
     envelope.disabled = true;
+    document.body.classList.add("is-opening-envelope");
+
+    // Reveal invitation under the dissolving fullscreen envelope
+    invitation.hidden = false;
+    // Force layout so the reveal transition can run
+    void invitation.offsetWidth;
+    invitation.classList.add("is-revealed");
     scene.classList.add("is-opening");
 
-    // Timeline: soft open → fade to invitation
     window.setTimeout(() => {
-      scene.classList.add("is-leaving");
-      invitation.hidden = false;
-      document.body.classList.remove("is-locked");
-
-      window.setTimeout(() => {
-        scene.remove();
-        observeReveals();
-      }, 1150);
-    }, 2100);
+      document.body.classList.remove("is-locked", "is-opening-envelope");
+      scene.remove();
+      observeReveals();
+    }, OPEN_MS);
   }
 
   envelope.addEventListener("click", openEnvelope);
@@ -43,11 +45,11 @@
   });
 
   if (previewOpen) {
-    // Instant open for screenshots / anteprima (?preview or ?preview=details|rsvp)
     opened = true;
     envelope.disabled = true;
     scene.remove();
     invitation.hidden = false;
+    invitation.classList.add("is-revealed");
     document.body.classList.remove("is-locked");
     document.body.classList.add("is-preview");
     invitation.querySelectorAll(".section, .footer").forEach((el) => {
@@ -96,7 +98,6 @@
       ? `${name}, la tua partecipazione per ${guests} ${Number(guests) === 1 ? "persona" : "persone"} è stata registrata. Non vediamo l'ora di festeggiare con te.`
       : `${name}, grazie per averci fatto sapere. Ci mancherai, ma terrremo un pensiero speciale per te.`;
 
-    // Persist locally so refreshed page can still show confirmation intent
     try {
       localStorage.setItem(
         "wedding-rsvp",
