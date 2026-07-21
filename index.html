@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -299,6 +299,12 @@
     </footer>
   </main>
 
-  <script src="script.js?v=9"></script>
+  <audio id="bgMusic" src="audio/background.mp3" loop preload="auto" playsinline></audio>
+  <button type="button" class="music-toggle" id="musicToggle" aria-label="Attiva o disattiva la musica" hidden>
+    <span class="music-toggle__icon music-toggle__icon--on" aria-hidden="true">♪</span>
+    <span class="music-toggle__icon music-toggle__icon--off" aria-hidden="true">♩</span>
+  </button>
+
+  <script src="script.js?v=10"></script>
 </body>
 </html>

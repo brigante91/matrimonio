@@ -874,6 +874,52 @@ body.is-opening-envelope .invitation[hidden] {
   color: var(--ink-soft);
 }
 
+/* ——— Background music toggle ——— */
+.music-toggle {
+  position: fixed;
+  top: max(1rem, env(safe-area-inset-top, 0px) + 0.75rem);
+  right: max(1rem, env(safe-area-inset-right, 0px) + 0.75rem);
+  z-index: 80;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(58, 52, 44, 0.14);
+  border-radius: 50%;
+  background: rgba(252, 249, 242, 0.88);
+  color: var(--terracotta-deep);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(58, 52, 44, 0.08);
+  transition: opacity 0.35s ease, transform 0.35s var(--ease-out), color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.music-toggle[hidden] {
+  display: none;
+}
+
+.music-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.music-toggle__icon {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.music-toggle.is-muted {
+  color: var(--ink-soft);
+  opacity: 0.72;
+}
+
+.music-toggle.is-muted .music-toggle__icon--on,
+.music-toggle:not(.is-muted) .music-toggle__icon--off {
+  display: none;
+}
+
 /* ——— Reveal on scroll ——— */
 .reveal {
   opacity: 0;

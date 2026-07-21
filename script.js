@@ -7,13 +7,64 @@
   const successText = document.getElementById("rsvpSuccessText");
   const guestsField = document.getElementById("guestsField");
   const attendanceInputs = form.querySelectorAll('input[name="attendance"]');
+  const bgMusic = document.getElementById("bgMusic");
+  const musicToggle = document.getElementById("musicToggle");
 
   let opened = false;
+  let musicStarted = false;
   const previewParam = new URLSearchParams(window.location.search).get("preview");
   const previewOpen = previewParam !== null;
   const OPEN_MS = 1500;
+  const MUSIC_VOLUME = 0.35;
 
   document.body.classList.add("is-locked");
+
+  function fadeInMusic() {
+    if (!bgMusic || musicStarted) return;
+    musicStarted = true;
+    bgMusic.volume = 0;
+    const playPromise = bgMusic.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        musicStarted = false;
+      });
+    }
+    musicToggle.hidden = false;
+    updateMusicToggle();
+
+    const start = performance.now();
+    const duration = 1800;
+    const step = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      bgMusic.volume = MUSIC_VOLUME * t;
+      if (t < 1 && !bgMusic.paused) requestAnimationFrame(step);
+      else if (!bgMusic.paused) bgMusic.volume = MUSIC_VOLUME;
+    };
+    requestAnimationFrame(step);
+  }
+
+  function updateMusicToggle() {
+    const muted = bgMusic.paused || bgMusic.muted || bgMusic.volume === 0;
+    musicToggle.classList.toggle("is-muted", muted);
+    musicToggle.setAttribute("aria-pressed", muted ? "false" : "true");
+    musicToggle.setAttribute(
+      "aria-label",
+      muted ? "Attiva la musica" : "Disattiva la musica"
+    );
+  }
+
+  musicToggle.addEventListener("click", () => {
+    if (bgMusic.paused) {
+      bgMusic.muted = false;
+      bgMusic.volume = MUSIC_VOLUME;
+      bgMusic.play().catch(() => {});
+      musicStarted = true;
+      musicToggle.hidden = false;
+    } else {
+      bgMusic.pause();
+    }
+    updateMusicToggle();
+  });
 
   function openEnvelope() {
     if (opened) return;
@@ -21,6 +72,7 @@
 
     envelope.disabled = true;
     document.body.classList.add("is-opening-envelope");
+    fadeInMusic();
 
     // Reveal invitation under the dissolving fullscreen envelope
     invitation.hidden = false;
@@ -52,6 +104,7 @@
     invitation.classList.add("is-revealed");
     document.body.classList.remove("is-locked");
     document.body.classList.add("is-preview");
+    fadeInMusic();
     invitation.querySelectorAll(".section, .footer").forEach((el) => {
       el.classList.add("reveal", "is-visible");
     });
