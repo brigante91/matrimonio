@@ -1,6 +1,7 @@
 (() => {
   // Incolla qui l’URL della web app Google Apps Script (dopo il deploy)
-  const SHEETS_WEBAPP_URL = "";
+  const SHEETS_WEBAPP_URL =
+    "https://script.google.com/macros/s/AKfycbz3qm09G5z8cJtcPNmRQ_ZNO1H2H07xWgSW7c2spHNxVYtjVhcyAgPLa2IQUmfoQXE-/exec";
 
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
