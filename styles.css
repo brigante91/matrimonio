@@ -9,17 +9,17 @@
   --blush-deep: #7463a3;
   --sage: #8fa88a;
   --sage-soft: #b5c6af;
-  --paper: #f6f3fa;
-  --paper-deep: #e8e1f2;
-  --envelope: #ddd4ec;
-  --envelope-dark: #c9bddf;
-  --envelope-light: #efe9f7;
-  --parchment-stain: rgba(116, 99, 163, 0.1);
+  --paper: #f7f3ea;
+  --paper-deep: #ebe4d6;
+  --envelope: #f3ead8;
+  --envelope-dark: #e5d9c4;
+  --envelope-light: #faf6ee;
+  --parchment-stain: rgba(180, 150, 90, 0.1);
   --parchment-edge: rgba(94, 86, 112, 0.22);
   --parchment-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  --wax: #6f5c9a;
-  --gold: #b5a4d4;
-  --cream-glow: rgba(255, 252, 255, 0.62);
+  --wax: #c9a227;
+  --gold: #d4af37;
+  --cream-glow: rgba(255, 252, 245, 0.62);
   --shadow: rgba(46, 42, 56, 0.16);
 
   --font-display: "Italianno", cursive;
@@ -70,7 +70,7 @@ textarea {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: #ebe3f5;
+  background: #f4efe4;
   transition: opacity 1.15s var(--ease-out), visibility 1.15s;
 }
 
