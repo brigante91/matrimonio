@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gianluca &amp; Michela — Partecipazione di Matrimonio</title>
+  <meta name="description" content="Siamo lieti di invitarti al nostro matrimonio. Apri la busta e conferma la tua partecipazione." />
+  <meta name="theme-color" content="#6f5c9a" />
+  <link rel="icon" href="favicon.svg?v=5" type="image/svg+xml" />
+  <link rel="icon" href="favicon-16.png?v=5" type="image/png" sizes="16x16" />
+  <link rel="icon" href="favicon-32.png?v=5" type="image/png" sizes="32x32" />
+  <link rel="icon" href="favicon.png?v=5" type="image/png" sizes="48x48" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=5" sizes="180x180" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Envelope overlay -->
+  <div class="envelope-scene" id="envelopeScene" aria-label="Busta d'invito">
+    <div class="envelope-atmosphere" aria-hidden="true"></div>
+    <div class="florals florals--envelope" aria-hidden="true">
+      <svg class="floral floral--tl" viewBox="0 0 200 220" fill="none">
+        <g opacity="0.92">
+          <path d="M98 210 C90 150 70 110 48 70" stroke="#9aab93" stroke-width="1.4" fill="none"/>
+          <ellipse cx="42" cy="58" rx="22" ry="14" transform="rotate(-25 42 58)" fill="#fff"/>
+          <ellipse cx="58" cy="48" rx="18" ry="12" transform="rotate(20 58 48)" fill="#f8f6fc"/>
+          <ellipse cx="36" cy="42" rx="14" ry="10" transform="rotate(-10 36 42)" fill="#fff"/>
+          <circle cx="48" cy="50" r="5" fill="#c9bddf"/>
+          <ellipse cx="88" cy="120" rx="16" ry="9" transform="rotate(-40 88 120)" fill="#fff" opacity="0.9"/>
+          <ellipse cx="102" cy="108" rx="14" ry="8" transform="rotate(15 102 108)" fill="#f7f4fb"/>
+          <circle cx="95" cy="114" r="3.5" fill="#b8a9d4"/>
+          <path d="M70 140 C55 130 40 132 28 145" stroke="#8fa88a" stroke-width="1.2" fill="none"/>
+          <ellipse cx="30" cy="148" rx="12" ry="6" transform="rotate(-30 30 148)" fill="#a8bc9f" opacity="0.55"/>
+        </g>
+      </svg>
+      <svg class="floral floral--tr" viewBox="0 0 200 220" fill="none">
+        <g opacity="0.9">
+          <path d="M90 210 C110 150 140 105 168 68" stroke="#9aab93" stroke-width="1.4" fill="none"/>
+          <ellipse cx="172" cy="54" rx="22" ry="14" transform="rotate(28 172 54)" fill="#fff"/>
+          <ellipse cx="155" cy="46" rx="17" ry="11" transform="rotate(-18 155 46)" fill="#f8f6fc"/>
+          <ellipse cx="178" cy="40" rx="13" ry="9" transform="rotate(8 178 40)" fill="#fff"/>
+          <circle cx="166" cy="48" r="5" fill="#c9bddf"/>
+          <ellipse cx="120" cy="118" rx="15" ry="8" transform="rotate(35 120 118)" fill="#fff" opacity="0.88"/>
+          <circle cx="118" cy="116" r="3.2" fill="#b8a9d4"/>
+          <ellipse cx="160" cy="150" rx="11" ry="5" transform="rotate(25 160 150)" fill="#a8bc9f" opacity="0.5"/>
+        </g>
+      </svg>
+      <svg class="floral floral--bl" viewBox="0 0 180 140" fill="none">
+        <ellipse cx="40" cy="90" rx="26" ry="16" transform="rotate(-30 40 90)" fill="#fff" opacity="0.85"/>
+        <ellipse cx="58" cy="78" rx="20" ry="12" transform="rotate(18 58 78)" fill="#f9f7fc"/>
+        <circle cx="48" cy="84" r="4.5" fill="#c4b5db"/>
+        <ellipse cx="110" cy="110" rx="18" ry="10" transform="rotate(-15 110 110)" fill="#fff" opacity="0.8"/>
+        <circle cx="108" cy="108" r="3" fill="#b8a9d4"/>
+        <ellipse cx="20" cy="115" rx="14" ry="6" transform="rotate(-40 20 115)" fill="#a8bc9f" opacity="0.45"/>
+      </svg>
+      <svg class="floral floral--br" viewBox="0 0 180 140" fill="none">
+        <ellipse cx="140" cy="88" rx="24" ry="15" transform="rotate(25 140 88)" fill="#fff" opacity="0.85"/>
+        <ellipse cx="122" cy="76" rx="18" ry="11" transform="rotate(-20 122 76)" fill="#f9f7fc"/>
+        <circle cx="132" cy="82" r="4.5" fill="#c4b5db"/>
+        <ellipse cx="70" cy="112" rx="16" ry="9" transform="rotate(12 70 112)" fill="#fff" opacity="0.78"/>
+        <circle cx="70" cy="110" r="3" fill="#b8a9d4"/>
+      </svg>
+    </div>
+    <p class="envelope-hint" id="envelopeHint">Tocca la busta per aprire</p>
+
+    <button type="button" class="envelope" id="envelope" aria-label="Apri la busta d'invito">
+      <span class="envelope__stage">
+        <img class="envelope__open" src="images/envelope-open.png" alt="" draggable="false" />
+        <img class="envelope__closed" src="images/envelope-closed.png" alt="" draggable="false" />
+      </span>
+    </button>
+  </div>
+
+  <!-- Invitation content -->
+  <main class="invitation" id="invitation" hidden>
+    <header class="hero">
+      <div class="hero__atmosphere" aria-hidden="true"></div>
+      <div class="florals florals--hero" aria-hidden="true">
+        <svg class="floral floral--hero-l" viewBox="0 0 260 420" fill="none">
+          <path d="M40 0 C55 80 30 160 70 240 C95 290 60 340 90 420" stroke="#aeb9a4" stroke-width="1.3" opacity="0.7"/>
+          <ellipse cx="48" cy="70" rx="28" ry="16" transform="rotate(-35 48 70)" fill="#fff"/>
+          <ellipse cx="68" cy="58" rx="22" ry="13" transform="rotate(18 68 58)" fill="#f8f6fc"/>
+          <ellipse cx="42" cy="52" rx="16" ry="11" fill="#fff"/>
+          <circle cx="55" cy="60" r="6" fill="#d4c8e8"/>
+          <ellipse cx="95" cy="160" rx="24" ry="14" transform="rotate(25 95 160)" fill="#fff" opacity="0.95"/>
+          <ellipse cx="78" cy="148" rx="18" ry="11" transform="rotate(-20 78 148)" fill="#f7f4fb"/>
+          <circle cx="88" cy="154" r="5" fill="#c9bddf"/>
+          <ellipse cx="55" cy="230" rx="20" ry="12" transform="rotate(-15 55 230)" fill="#fff" opacity="0.9"/>
+          <circle cx="55" cy="228" r="4" fill="#b8a9d4"/>
+          <ellipse cx="30" cy="120" rx="14" ry="6" transform="rotate(-50 30 120)" fill="#9db392" opacity="0.45"/>
+          <ellipse cx="110" cy="210" rx="13" ry="6" transform="rotate(40 110 210)" fill="#9db392" opacity="0.4"/>
+          <ellipse cx="70" cy="300" rx="22" ry="13" transform="rotate(10 70 300)" fill="#fff" opacity="0.88"/>
+          <circle cx="70" cy="298" r="4.5" fill="#c4b5db"/>
+        </svg>
+        <svg class="floral floral--hero-r" viewBox="0 0 260 420" fill="none">
+          <path d="M220 0 C200 90 235 170 190 250 C165 300 205 350 170 420" stroke="#aeb9a4" stroke-width="1.3" opacity="0.7"/>
+          <ellipse cx="210" cy="65" rx="28" ry="16" transform="rotate(30 210 65)" fill="#fff"/>
+          <ellipse cx="190" cy="54" rx="22" ry="13" transform="rotate(-22 190 54)" fill="#f8f6fc"/>
+          <ellipse cx="218" cy="48" rx="15" ry="10" fill="#fff"/>
+          <circle cx="205" cy="56" r="6" fill="#d4c8e8"/>
+          <ellipse cx="165" cy="155" rx="24" ry="14" transform="rotate(-28 165 155)" fill="#fff" opacity="0.95"/>
+          <circle cx="168" cy="152" r="5" fill="#c9bddf"/>
+          <ellipse cx="200" cy="235" rx="20" ry="12" transform="rotate(18 200 235)" fill="#fff" opacity="0.9"/>
+          <circle cx="200" cy="233" r="4" fill="#b8a9d4"/>
+          <ellipse cx="230" cy="125" rx="14" ry="6" transform="rotate(45 230 125)" fill="#9db392" opacity="0.45"/>
+          <ellipse cx="185" cy="295" rx="22" ry="13" transform="rotate(-12 185 295)" fill="#fff" opacity="0.88"/>
+          <circle cx="185" cy="293" r="4.5" fill="#c4b5db"/>
+        </svg>
+      </div>
+      <p class="hero__kicker">Con immensa gioia</p>
+      <h1 class="hero__names">
+        <span class="hero__name">Gianluca</span>
+        <span class="hero__ampersand">&amp;</span>
+        <span class="hero__name">Michela</span>
+      </h1>
+      <p class="hero__tagline">vi invitano a celebrare il loro matrimonio</p>
+      <div class="ornament" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+      <p class="hero__date">14 luglio 2027</p>
+    </header>
+
+    <section class="section portrait" aria-labelledby="portrait-title">
+      <p class="section__eyebrow">Gli sposi</p>
+      <h2 id="portrait-title" class="section__title">Gianluca &amp; Michela</h2>
+      <div class="ornament ornament--tight" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+      <figure class="portrait-frame">
+        <div class="portrait-frame__ring">
+          <img
+            class="portrait-frame__image"
+            src="images/sposi-cartoon.png"
+            alt="Illustrazione cartoon di Gianluca e Michela"
+            width="640"
+            height="640"
+          />
+        </div>
+        <figcaption class="portrait-frame__caption">
+          In versione cartoon, con tutto l’amore del caso
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="section story" aria-labelledby="story-title">
+      <h2 id="story-title" class="section__title">Il nostro giorno</h2>
+      <div class="ornament ornament--tight" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+      <p class="section__text">
+        Dopo anni di sorrisi, viaggi e piccoli gesti quotidiani, abbiamo deciso di unire le nostre vite.
+        Sarà un giorno intimo e speciale e la vostra presenza lo renderà ancora più bellissimo.
+      </p>
+    </section>
+
+    <section class="section details" aria-labelledby="details-title">
+      <h2 id="details-title" class="section__title">Dettagli</h2>
+      <div class="ornament ornament--tight" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+
+      <div class="detail-list">
+        <article class="detail">
+          <p class="detail__label">Cerimonia</p>
+          <h3 class="detail__heading">Chiesa di San Rocco</h3>
+          <p class="detail__meta">ore 12:00</p>
+          <p class="detail__place">Via Mercanti, 46 · Salerno</p>
+          <div class="detail__map">
+            <iframe
+              title="Mappa Chiesa di San Rocco, Salerno"
+              src="https://www.google.com/maps?q=40.80195447682556,14.691289809119986&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+            <a
+              class="detail__map-link"
+              href="https://www.google.com/maps/search/?api=1&query=40.80195447682556,14.691289809119986"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Apri in Google Maps</a>
+          </div>
+        </article>
+
+        <article class="detail">
+          <p class="detail__label">Ricevimento</p>
+          <h3 class="detail__heading">Tenuta Leone</h3>
+          <p class="detail__meta">seguirà dopo</p>
+          <p class="detail__place">Via Roma, 19 · Calvanico</p>
+          <div class="detail__map">
+            <iframe
+              title="Mappa Tenuta Leone, Calvanico"
+              src="https://www.google.com/maps?q=Tenuta+Leone,+Via+Roma+19,+84080+Calvanico&output=embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen
+            ></iframe>
+            <a
+              class="detail__map-link"
+              href="https://www.google.com/maps/search/?api=1&query=Tenuta+Leone,+Via+Roma+19,+84080+Calvanico"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Apri in Google Maps</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section rsvp" aria-labelledby="rsvp-title">
+      <h2 id="rsvp-title" class="section__title">Conferma la tua presenza</h2>
+      <div class="ornament ornament--tight" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+      <p class="section__text">Ci farebbe piacere sapere se ci sarete. Rispondi entro il 15 maggio 2027.</p>
+
+      <form class="rsvp-form" id="rsvpForm" novalidate>
+        <div class="field">
+          <label for="guestName">Nome e cognome</label>
+          <input type="text" id="guestName" name="name" required autocomplete="name" placeholder="Il tuo nome" />
+        </div>
+
+        <div class="field">
+          <label for="guestEmail">Email</label>
+          <input type="email" id="guestEmail" name="email" required autocomplete="email" placeholder="la.tua@email.it" />
+        </div>
+
+        <fieldset class="field field--choice">
+          <legend>Parteciperai?</legend>
+          <div class="choice-row">
+            <label class="choice">
+              <input type="radio" name="attendance" value="si" required checked />
+              <span>Sì, ci sarò</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="attendance" value="no" />
+              <span>Purtroppo no</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="guestsField">
+          <label for="guestCount">Numero di ospiti (incluso te)</label>
+          <input type="number" id="guestCount" name="guests" min="1" max="8" value="1" />
+        </div>
+
+        <div class="field">
+          <label for="guestMenu">Preferenza menù</label>
+          <select id="guestMenu" name="menu">
+            <option value="standard">Menù standard</option>
+            <option value="vegetariano">Vegetariano</option>
+            <option value="vegano">Vegano</option>
+            <option value="celiachia">Senza glutine</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="guestMessage">Messaggio per gli sposi</label>
+          <textarea id="guestMessage" name="message" rows="4" placeholder="Un pensiero, un'allergia alimentare, una canzone che non può mancare…"></textarea>
+        </div>
+
+        <button type="submit" class="btn">Invia partecipazione</button>
+      </form>
+
+      <div class="rsvp-success" id="rsvpSuccess" hidden>
+        <p class="rsvp-success__title">Grazie di cuore</p>
+        <p class="rsvp-success__text" id="rsvpSuccessText"></p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="ornament ornament--tight" aria-hidden="true">
+        <span class="ornament__line"></span>
+        <span class="ornament__bloom"></span>
+        <span class="ornament__line"></span>
+      </div>
+      <p class="footer__script">Con amore,</p>
+      <p class="footer__names">Gianluca &amp; Michela</p>
+      <p class="footer__note">Per info: gianluca.michela@email.it</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
