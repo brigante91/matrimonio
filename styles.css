@@ -47,6 +47,9 @@
   --anim-romantic-flap: 820ms;
   --anim-romantic-leave: 1200ms;
   --anim-romantic-flash: 520ms;
+  --anim-fader-in: 720ms;
+  --anim-fader-hold: 180ms;
+  --anim-fader-out: 1100ms;
   --anim-tilt-max: 6deg;
 }
 
@@ -574,11 +577,42 @@ body.anim-romantic .envelope-scene.is-leaving {
   cursor: default;
 }
 
+/* Soft paper fader between envelope and invitation */
+.scene-fader {
+  position: fixed;
+  inset: 0;
+  z-index: 105;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 38%, rgba(255, 252, 247, 0.55), transparent 68%),
+    linear-gradient(180deg, #fcf9f2 0%, #f7f1e6 100%);
+  transition:
+    opacity var(--anim-fader-in) var(--ease-out),
+    visibility var(--anim-fader-in);
+}
+
+.scene-fader.is-in {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.scene-fader.is-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--anim-fader-out) var(--ease-out),
+    visibility var(--anim-fader-out);
+}
+
 /* Invitation reveal */
 .invitation {
   position: relative;
   opacity: 0;
-  transform: translateY(12px) scale(0.992);
+  transform: translateY(10px) scale(0.994);
   transition:
     opacity var(--anim-invitation-reveal) var(--ease-out),
     transform var(--anim-invitation-reveal) var(--ease-out);
@@ -587,6 +621,12 @@ body.anim-romantic .envelope-scene.is-leaving {
 .invitation.is-revealed {
   opacity: 1;
   transform: translateY(0) scale(1);
+}
+
+.invitation.is-ready-under-fader {
+  transition: none;
+  opacity: 1;
+  transform: none;
 }
 
 body.anim-romantic .invitation.is-revealed {

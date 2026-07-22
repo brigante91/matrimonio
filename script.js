@@ -27,6 +27,7 @@
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
   const stage = document.getElementById("envelopeStage");
+  const sceneFader = document.getElementById("sceneFader");
   const animDebug = document.getElementById("animDebug");
   const invitation = document.getElementById("invitation");
   const form = document.getElementById("rsvpForm");
@@ -277,7 +278,8 @@
 
   function finishOpen() {
     document.body.classList.remove("is-locked", "is-opening-envelope");
-    scene.remove();
+    if (scene && scene.isConnected) scene.remove();
+    if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     observeReveals();
   }
 
@@ -285,18 +287,46 @@
     invitation.hidden = false;
     invitation.classList.add("is-revealed");
     document.body.classList.remove("is-locked", "is-opening-envelope");
-    scene.remove();
+    if (scene && scene.isConnected) scene.remove();
+    if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     observeReveals();
+  }
+
+  async function transitionToSite() {
+    if (!sceneFader || reducedMotion) {
+      revealInvitation();
+      if (scene) {
+        scene.classList.add("is-leaving");
+        await wait(parseMs("--anim-scene-leave"));
+      }
+      finishOpen();
+      return;
+    }
+
+    sceneFader.classList.add("is-in");
+    await wait(parseMs("--anim-fader-in"));
+
+    invitation.hidden = false;
+    invitation.classList.add("is-revealed", "is-ready-under-fader");
+    if (scene) {
+      scene.style.visibility = "hidden";
+      scene.style.pointerEvents = "none";
+    }
+
+    await wait(parseMs("--anim-fader-hold"));
+
+    sceneFader.classList.remove("is-in");
+    sceneFader.classList.add("is-out");
+    invitation.classList.remove("is-ready-under-fader");
+    await wait(parseMs("--anim-fader-out"));
+    finishOpen();
   }
 
   /* ——— Variant orchestration ——— */
   async function runClassic() {
     scene.classList.add("is-flap-opening");
     await wait(parseMs("--anim-classic-crossfade"));
-    revealInvitation();
-    scene.classList.add("is-leaving");
-    await wait(parseMs("--anim-classic-leave"));
-    finishOpen();
+    await transitionToSite();
   }
 
   async function runLight() {
@@ -304,10 +334,7 @@
     await wait(parseMs("--anim-seal-break"));
     scene.classList.add("is-flap-opening");
     await wait(parseMs("--anim-flap-open"));
-    revealInvitation();
-    scene.classList.add("is-leaving");
-    await wait(parseMs("--anim-light-leave"));
-    finishOpen();
+    await transitionToSite();
   }
 
   async function runCinematic() {
@@ -317,10 +344,7 @@
     await wait(parseMs("--anim-flap-open"));
     scene.classList.add("is-letter-rising");
     await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
-    revealInvitation(true);
-    scene.classList.add("is-zooming");
-    await wait(parseMs("--anim-scene-zoom"));
-    finishOpen();
+    await transitionToSite();
   }
 
   async function run3DCinema() {
@@ -330,20 +354,15 @@
     await wait(parseMs("--anim-flap-open"));
     scene.classList.add("is-letter-rising");
     await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
-    revealInvitation(true);
-    scene.classList.add("is-zooming");
-    await wait(parseMs("--anim-scene-zoom"));
-    finishOpen();
+    await transitionToSite();
   }
 
   async function runRomantic() {
     scene.classList.add("is-blooming", "is-flap-opening");
     await wait(parseMs("--anim-romantic-flap"));
     scene.classList.add("is-flashing");
-    revealInvitation();
-    scene.classList.add("is-leaving");
-    await wait(parseMs("--anim-romantic-leave"));
-    finishOpen();
+    await wait(Math.min(220, parseMs("--anim-romantic-flash")));
+    await transitionToSite();
   }
 
   async function openEnvelope() {
