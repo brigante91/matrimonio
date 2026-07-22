@@ -49,8 +49,13 @@
   let musicPausedByUser = false;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const MUSIC_VOLUME = isTouch ? 0.035 : 0.07;
+  const MUSIC_VOLUME = Math.min(1, Math.max(0, isTouch ? 0.035 : 0.07));
   const MUSIC_PREF_KEY = "wedding-music-on";
+
+  function clampVolume(value) {
+    if (!Number.isFinite(value)) return 0;
+    return Math.min(1, Math.max(0, value));
+  }
 
   document.body.classList.add(`anim-${anim}`);
   if (isTouch) document.body.classList.add("is-touch");
@@ -159,15 +164,17 @@
     if (!bgMusic) return;
     const start = performance.now();
     const duration = 1800;
+    const target = clampVolume(MUSIC_VOLUME);
 
     const step = (now) => {
       if (!bgMusic || bgMusic.paused) return;
-      const t = Math.min(1, (now - start) / duration);
-      bgMusic.volume = MUSIC_VOLUME * t;
+      const elapsed = Math.max(0, now - start);
+      const t = Math.min(1, elapsed / duration);
+      bgMusic.volume = clampVolume(target * t);
       syncMusicToggle();
       if (t < 1) musicFadeFrame = requestAnimationFrame(step);
       else {
-        bgMusic.volume = MUSIC_VOLUME;
+        bgMusic.volume = target;
         syncMusicToggle();
       }
     };
