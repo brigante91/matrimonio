@@ -1246,47 +1246,151 @@ body.is-opening-envelope .invitation[hidden] {
 /* ——— Background music toggle ——— */
 .music-toggle {
   position: fixed;
-  top: max(1rem, env(safe-area-inset-top, 0px) + 0.75rem);
+  bottom: max(1.15rem, env(safe-area-inset-bottom, 0px) + 0.85rem);
   right: max(1rem, env(safe-area-inset-right, 0px) + 0.75rem);
-  z-index: 80;
-  width: 2.6rem;
-  height: 2.6rem;
-  border: 1px solid rgba(58, 52, 44, 0.14);
-  border-radius: 50%;
-  background: rgba(252, 249, 242, 0.88);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.85rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.65rem;
+  border: 1px solid rgba(58, 52, 44, 0.12);
+  border-radius: 999px;
+  background: rgba(252, 249, 242, 0.92);
   color: var(--terracotta-deep);
   cursor: pointer;
-  display: grid;
-  place-items: center;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 6px 18px rgba(58, 52, 44, 0.08);
-  transition: opacity 0.35s ease, transform 0.35s var(--ease-out), color 0.25s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 16px rgba(58, 52, 44, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  transition:
+    transform 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out),
+    border-color 0.25s ease,
+    color 0.25s ease,
+    opacity 0.35s ease;
   -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
 }
 
 .music-toggle[hidden] {
   display: none;
 }
 
-.music-toggle:hover {
-  transform: translateY(-1px);
+.music-toggle__pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgba(182, 92, 58, 0.18), transparent 70%);
+}
+
+.music-toggle:not(.is-muted) .music-toggle__pulse {
+  animation: musicPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes musicPulse {
+  0%, 100% { opacity: 0; transform: scale(0.96); }
+  50% { opacity: 1; transform: scale(1); }
 }
 
 .music-toggle__icon {
-  font-family: var(--font-serif);
-  font-size: 1.15rem;
+  position: relative;
+  z-index: 1;
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+}
+
+.music-toggle__wave {
+  transform-origin: center;
+  opacity: 1;
+  transition: opacity 0.25s ease, transform 0.25s var(--ease-out);
+}
+
+.music-toggle:not(.is-muted) .music-toggle__wave--1 {
+  animation: musicWave 0.9s ease-in-out infinite;
+}
+
+.music-toggle:not(.is-muted) .music-toggle__wave--2 {
+  animation: musicWave 0.9s ease-in-out infinite 0.15s;
+}
+
+.music-toggle:not(.is-muted) .music-toggle__wave--3 {
+  animation: musicWave 0.9s ease-in-out infinite 0.3s;
+}
+
+@keyframes musicWave {
+  0%, 100% { transform: scaleY(0.55); opacity: 0.45; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.music-toggle__mute {
+  opacity: 0;
+  transform: scale(0.6) rotate(-8deg);
+  transform-origin: center;
+  transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
+}
+
+.music-toggle.is-muted .music-toggle__wave {
+  opacity: 0;
+  transform: scaleY(0.4);
+  animation: none;
+}
+
+.music-toggle.is-muted .music-toggle__mute {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.music-toggle__label {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   line-height: 1;
+  padding-right: 0.1rem;
+}
+
+.music-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 22px rgba(58, 52, 44, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  border-color: rgba(154, 74, 46, 0.22);
+}
+
+.music-toggle:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .music-toggle.is-muted {
   color: var(--ink-soft);
-  opacity: 0.72;
+  opacity: 0.88;
 }
 
-.music-toggle.is-muted .music-toggle__icon--on,
-.music-toggle:not(.is-muted) .music-toggle__icon--off {
-  display: none;
+.music-toggle:focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+@media (max-width: 420px) {
+  .music-toggle__label {
+    display: none;
+  }
+
+  .music-toggle {
+    width: 2.85rem;
+    height: 2.85rem;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+  }
 }
 
 /* ——— Reveal on scroll ——— */

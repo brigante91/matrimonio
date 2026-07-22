@@ -167,17 +167,21 @@
       "aria-label",
       muted ? "Attiva la musica" : "Disattiva la musica"
     );
+    const label = musicToggle.querySelector(".music-toggle__label");
+    if (label) label.textContent = muted ? "Musica off" : "Musica on";
   }
 
-  musicToggle.addEventListener("click", () => {
-    if (!bgMusic) return;
-    if (bgMusic.paused || bgMusic.muted || bgMusic.volume === 0) {
-      unlockMusic();
-    } else {
-      bgMusic.pause();
-    }
-    updateMusicToggle();
-  });
+  if (musicToggle) {
+    musicToggle.addEventListener("click", () => {
+      if (!bgMusic) return;
+      if (bgMusic.paused || bgMusic.muted || bgMusic.volume === 0) {
+        unlockMusic();
+      } else {
+        bgMusic.pause();
+      }
+      updateMusicToggle();
+    });
+  }
 
   /* ——— Cinematic 3D tilt (desktop only) ——— */
   if (anim === "cinematic" && !isTouch && stage && envelope) {

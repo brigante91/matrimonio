@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=20" />
+  <link rel="stylesheet" href="styles.css?v=21" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -282,11 +282,18 @@
   </main>
 
   <audio id="bgMusic" src="audio/background.mp3" loop preload="auto" playsinline autoplay muted></audio>
-  <button type="button" class="music-toggle" id="musicToggle" aria-label="Attiva o disattiva la musica" hidden>
-    <span class="music-toggle__icon music-toggle__icon--on" aria-hidden="true">♪</span>
-    <span class="music-toggle__icon music-toggle__icon--off" aria-hidden="true">♩</span>
+  <button type="button" class="music-toggle" id="musicToggle" aria-label="Disattiva la musica" aria-pressed="true" hidden>
+    <span class="music-toggle__pulse" aria-hidden="true"></span>
+    <svg class="music-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path class="music-toggle__speaker" d="M4 9.5v5a1 1 0 0 0 1 1h2.2l3.8 2.85V5.65L7.2 8.5H5a1 1 0 0 0-1 1Z" fill="currentColor"/>
+      <path class="music-toggle__wave music-toggle__wave--1" d="M13.5 8.5c1.6 1.2 1.6 5.8 0 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path class="music-toggle__wave music-toggle__wave--2" d="M16.2 6.2c2.8 2.1 2.8 9.5 0 11.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path class="music-toggle__wave music-toggle__wave--3" d="M18.8 3.8c4 3 4 13.4 0 16.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path class="music-toggle__mute" d="M4.5 4.5l15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span class="music-toggle__label">Musica</span>
   </button>
 
-  <script src="script.js?v=19"></script>
+  <script src="script.js?v=20"></script>
 </body>
 </html>
