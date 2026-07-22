@@ -270,6 +270,16 @@
     });
   }
 
+  function softStopBreathe() {
+    if (!stage) return;
+    const computed = getComputedStyle(stage).transform;
+    stage.style.animation = "none";
+    stage.style.transform = !computed || computed === "none" ? "scale(1)" : computed;
+    void stage.offsetWidth;
+    stage.style.transition = `transform ${parseMs("--anim-settle")}ms var(--ease-dissolve, ease-out)`;
+    stage.style.transform = "scale(1)";
+  }
+
   function revealInvitation(zoom = false) {
     invitation.hidden = false;
     void invitation.offsetWidth;
@@ -277,7 +287,8 @@
   }
 
   function finishOpen() {
-    document.body.classList.remove("is-locked", "is-opening-envelope");
+    document.body.classList.add("has-opened");
+    document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
     if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     observeReveals();
@@ -286,7 +297,8 @@
   function finishOpenInstant() {
     invitation.hidden = false;
     invitation.classList.add("is-revealed");
-    document.body.classList.remove("is-locked", "is-opening-envelope");
+    document.body.classList.add("has-opened");
+    document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
     if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     observeReveals();
@@ -303,42 +315,54 @@
       return;
     }
 
+    invitation.hidden = false;
+    void invitation.offsetWidth;
+
+    if (stage) {
+      stage.style.animation = "";
+      stage.style.transition = "";
+      stage.style.transform = "";
+    }
+    if (scene) scene.classList.add("is-dissolving");
     sceneFader.classList.add("is-in");
     await wait(parseMs("--anim-fader-in"));
 
-    invitation.hidden = false;
-    invitation.classList.add("is-revealed", "is-ready-under-fader");
     if (scene) {
       scene.style.visibility = "hidden";
       scene.style.pointerEvents = "none";
+      scene.style.opacity = "0";
     }
 
-    await wait(parseMs("--anim-fader-hold"));
-
+    document.body.classList.add("is-revealing-site");
+    invitation.classList.add("is-revealed");
     sceneFader.classList.remove("is-in");
     sceneFader.classList.add("is-out");
-    invitation.classList.remove("is-ready-under-fader");
     await wait(parseMs("--anim-fader-out"));
     finishOpen();
   }
 
   /* ——— Variant orchestration ——— */
   async function runClassic() {
+    softStopBreathe();
+    scene.classList.add("is-settling");
+    await wait(parseMs("--anim-settle"));
     scene.classList.add("is-flap-opening");
-    await wait(parseMs("--anim-classic-crossfade"));
+    await wait(Math.round(parseMs("--anim-classic-crossfade") * 0.55));
     await transitionToSite();
   }
 
   async function runLight() {
-    scene.classList.add("is-seal-breaking");
+    softStopBreathe();
+    scene.classList.add("is-settling", "is-seal-breaking");
     await wait(parseMs("--anim-seal-break"));
     scene.classList.add("is-flap-opening");
-    await wait(parseMs("--anim-flap-open"));
+    await wait(Math.round(parseMs("--anim-flap-open") * 0.6));
     await transitionToSite();
   }
 
   async function runCinematic() {
-    scene.classList.add("is-seal-breaking");
+    softStopBreathe();
+    scene.classList.add("is-settling", "is-seal-breaking");
     await wait(parseMs("--anim-seal-break"));
     scene.classList.add("is-flap-opening");
     await wait(parseMs("--anim-flap-open"));
@@ -348,7 +372,8 @@
   }
 
   async function run3DCinema() {
-    scene.classList.add("is-seal-breaking");
+    softStopBreathe();
+    scene.classList.add("is-settling", "is-seal-breaking");
     await wait(parseMs("--anim-seal-break"));
     scene.classList.add("is-flap-opening");
     await wait(parseMs("--anim-flap-open"));
@@ -358,18 +383,18 @@
   }
 
   async function runRomantic() {
-    scene.classList.add("is-blooming", "is-flap-opening");
-    await wait(parseMs("--anim-romantic-flap"));
+    softStopBreathe();
+    scene.classList.add("is-settling", "is-blooming", "is-flap-opening");
+    await wait(Math.round(parseMs("--anim-romantic-flap") * 0.65));
     scene.classList.add("is-flashing");
-    await wait(Math.min(220, parseMs("--anim-romantic-flash")));
     await transitionToSite();
   }
 
   async function openEnvelope() {
     if (opened) return;
-    await tryUnlockMusic();
     opened = true;
     envelope.disabled = true;
+    tryUnlockMusic();
 
     if (reducedMotion) {
       finishOpenInstant();

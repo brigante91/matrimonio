@@ -35,22 +35,23 @@
 
   /* ——— Envelope animation timings (tune here) ——— */
   --anim-seal-break: 320ms;
-  --anim-flap-open: 680ms;
-  --anim-letter-rise: 480ms;
-  --anim-letter-pause: 200ms;
+  --anim-flap-open: 900ms;
+  --anim-letter-rise: 560ms;
+  --anim-letter-pause: 120ms;
   --anim-scene-zoom: 820ms;
   --anim-scene-leave: 920ms;
-  --anim-invitation-reveal: 1100ms;
-  --anim-classic-crossfade: 880ms;
+  --anim-invitation-reveal: 1200ms;
+  --anim-classic-crossfade: 1100ms;
   --anim-classic-leave: 1000ms;
   --anim-light-leave: 880ms;
-  --anim-romantic-flap: 820ms;
+  --anim-romantic-flap: 900ms;
   --anim-romantic-leave: 1200ms;
   --anim-romantic-flash: 520ms;
-  --anim-fader-in: 720ms;
-  --anim-fader-hold: 180ms;
-  --anim-fader-out: 1100ms;
+  --anim-fader-in: 900ms;
+  --anim-fader-out: 1200ms;
+  --anim-settle: 280ms;
   --anim-tilt-max: 6deg;
+  --ease-dissolve: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *,
@@ -234,10 +235,6 @@ body.anim-3d-cinema .envelope__closed {
   display: none;
 }
 
-body.anim-3d-cinema .envelope__stage {
-  animation: envelopeBreathe 4.5s ease-in-out infinite;
-}
-
 .envelope__open,
 .envelope__closed {
   position: absolute;
@@ -270,13 +267,33 @@ body.anim-3d-cinema .envelope__stage {
     filter 0.6s var(--ease-out);
 }
 
-.envelope:not(:disabled) .envelope__closed {
+.envelope:not(:disabled) .envelope__stage {
   animation: envelopeBreathe 4.5s ease-in-out infinite;
+}
+
+.envelope:not(:disabled) .envelope__closed {
+  animation: none;
 }
 
 @keyframes envelopeBreathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.018); }
+  50% { transform: scale(1.014); }
+}
+
+.envelope-scene.is-settling .envelope__stage,
+.envelope-scene.is-flap-opening .envelope__stage,
+.envelope-scene.is-dissolving .envelope__stage {
+  animation: none;
+}
+
+.envelope-scene.is-dissolving .envelope__stage {
+  transform: scale(1.02);
+  opacity: 0.55;
+  filter: blur(1.5px);
+  transition:
+    opacity var(--anim-fader-in) var(--ease-dissolve),
+    transform var(--anim-fader-in) var(--ease-dissolve),
+    filter var(--anim-fader-in) var(--ease-dissolve);
 }
 
 /* Wax seal (SVG inline) */
@@ -351,10 +368,12 @@ body.anim-classic .envelope__open {
 body.anim-classic .envelope-scene.is-flap-opening .envelope__closed {
   animation: none;
   opacity: 0;
+  transition: opacity var(--anim-classic-crossfade) var(--ease-dissolve);
 }
 
 body.anim-classic .envelope-scene.is-flap-opening .envelope__open {
   opacity: 1;
+  transition: opacity var(--anim-classic-crossfade) var(--ease-dissolve);
 }
 
 body.anim-classic .envelope-scene.is-leaving {
@@ -586,11 +605,12 @@ body.anim-romantic .envelope-scene.is-leaving {
   opacity: 0;
   visibility: hidden;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 38%, rgba(255, 252, 247, 0.55), transparent 68%),
+    radial-gradient(ellipse 72% 58% at 50% 40%, rgba(255, 252, 247, 0.72), transparent 70%),
     linear-gradient(180deg, #fcf9f2 0%, #f7f1e6 100%);
   transition:
-    opacity var(--anim-fader-in) var(--ease-out),
+    opacity var(--anim-fader-in) var(--ease-dissolve),
     visibility var(--anim-fader-in);
+  will-change: opacity;
 }
 
 .scene-fader.is-in {
@@ -604,7 +624,7 @@ body.anim-romantic .envelope-scene.is-leaving {
   visibility: hidden;
   pointer-events: none;
   transition:
-    opacity var(--anim-fader-out) var(--ease-out),
+    opacity var(--anim-fader-out) var(--ease-dissolve),
     visibility var(--anim-fader-out);
 }
 
@@ -612,25 +632,19 @@ body.anim-romantic .envelope-scene.is-leaving {
 .invitation {
   position: relative;
   opacity: 0;
-  transform: translateY(10px) scale(0.994);
+  transform: translateY(6px);
   transition:
-    opacity var(--anim-invitation-reveal) var(--ease-out),
-    transform var(--anim-invitation-reveal) var(--ease-out);
+    opacity var(--anim-fader-out) var(--ease-dissolve),
+    transform var(--anim-fader-out) var(--ease-dissolve);
 }
 
 .invitation.is-revealed {
   opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.invitation.is-ready-under-fader {
-  transition: none;
-  opacity: 1;
-  transform: none;
+  transform: translateY(0);
 }
 
 body.anim-romantic .invitation.is-revealed {
-  transition-duration: calc(var(--anim-invitation-reveal) * 1.2);
+  transition-duration: calc(var(--anim-fader-out) * 1.1);
 }
 
 .invitation[hidden] {
@@ -639,6 +653,54 @@ body.anim-romantic .invitation.is-revealed {
 
 body.is-opening-envelope .invitation[hidden] {
   display: block;
+}
+
+/* Hold hero entrance until the site starts revealing */
+body.is-opening-envelope:not(.is-revealing-site) .hero__kicker,
+body.is-opening-envelope:not(.is-revealing-site) .hero__names,
+body.is-opening-envelope:not(.is-revealing-site) .hero__tagline,
+body.is-opening-envelope:not(.is-revealing-site) .hero__date,
+body.is-opening-envelope:not(.is-revealing-site) .countdown,
+body.is-opening-envelope:not(.is-revealing-site) .hero .ornament {
+  animation: none !important;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+body.is-revealing-site .hero__kicker {
+  animation: fadeUp 1s var(--ease-dissolve) 0.05s both;
+}
+
+body.is-revealing-site .hero__names {
+  animation: fadeUp 1.05s var(--ease-dissolve) 0.18s both;
+}
+
+body.is-revealing-site .countdown {
+  animation: fadeUp 1.05s var(--ease-dissolve) 0.3s both;
+}
+
+body.is-revealing-site .hero__tagline {
+  animation: fadeUp 1.05s var(--ease-dissolve) 0.4s both;
+}
+
+body.is-revealing-site .hero .ornament {
+  animation: fadeUp 1s var(--ease-dissolve) 0.48s both;
+}
+
+body.is-revealing-site .hero__date {
+  animation: fadeUp 1.05s var(--ease-dissolve) 0.55s both;
+}
+
+/* Keep hero stable after the opening sequence ends */
+body.has-opened .hero__kicker,
+body.has-opened .hero__names,
+body.has-opened .hero__tagline,
+body.has-opened .hero__date,
+body.has-opened .countdown,
+body.has-opened .hero .ornament {
+  animation: none !important;
+  opacity: 1;
+  transform: none;
 }
 
 /* ——— Debug switcher (?debug=1) ——— */
