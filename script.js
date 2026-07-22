@@ -45,7 +45,8 @@
   let musicStarted = false;
   let musicUnlocked = false;
   let musicFadeFrame = null;
-  const MUSIC_VOLUME = 0.22;
+  let musicPausedByUser = false;
+  const MUSIC_VOLUME = 0.10;
   const MUSIC_PREF_KEY = "wedding-music-on";
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -138,7 +139,7 @@
   }
 
   async function tryUnlockMusic() {
-    if (!bgMusic || reducedMotion) return false;
+    if (!bgMusic || reducedMotion || musicPausedByUser) return false;
     if (isMusicAudible()) return true;
 
     try {
@@ -149,6 +150,7 @@
       }
       musicUnlocked = true;
       musicStarted = true;
+      musicPausedByUser = false;
       if (musicToggle) musicToggle.hidden = false;
       fadeInVolume();
       try {
@@ -196,9 +198,10 @@
 
   function bindMusicUnlockGestures() {
     const unlockFromGesture = () => {
-      if (!isMusicAudible()) tryUnlockMusic();
+      if (musicPausedByUser || isMusicAudible()) return;
+      tryUnlockMusic();
     };
-    ["pointerdown", "touchstart", "click", "keydown"].forEach((eventName) => {
+    ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
       document.addEventListener(eventName, unlockFromGesture, {
         passive: true,
         capture: true,
@@ -226,13 +229,21 @@
   }
 
   if (musicToggle) {
-    musicToggle.addEventListener("click", async () => {
+    musicToggle.addEventListener("click", async (event) => {
+      event.stopPropagation();
       if (!bgMusic) return;
       if (isMusicAudible()) {
+        musicPausedByUser = true;
         bgMusic.pause();
+        try {
+          localStorage.setItem(MUSIC_PREF_KEY, "0");
+        } catch {
+          // ignore
+        }
         syncMusicToggle();
         return;
       }
+      musicPausedByUser = false;
       await tryUnlockMusic();
       syncMusicToggle();
     });
