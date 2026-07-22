@@ -34,7 +34,7 @@
   let opened = false;
   let musicStarted = false;
   let petalInterval = null;
-  const MUSIC_VOLUME = 0.35;
+  const MUSIC_VOLUME = 0.22;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
@@ -284,7 +284,6 @@
     if (opened) return;
     opened = true;
     envelope.disabled = true;
-    fadeInMusic();
 
     if (reducedMotion) {
       finishOpenInstant();
@@ -307,6 +306,16 @@
       openEnvelope();
     }
   });
+
+  /* Musica: parte al caricamento; se il browser blocca l'autoplay, al primo tap */
+  fadeInMusic();
+  document.addEventListener(
+    "pointerdown",
+    () => {
+      if (!musicStarted) fadeInMusic();
+    },
+    { once: true, passive: true }
+  );
 
   /* Romantic idle petal snowfall */
   if (anim === "romantic" && !previewSection && !reducedMotion) {
