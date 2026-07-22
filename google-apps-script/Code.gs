@@ -22,7 +22,7 @@ function doPost(e) {
     sheet.appendRow([
       new Date(),
       data.name || "",
-      data.email || "",
+      data.phone || data.email || "",
       data.attendance || "",
       data.guests || "",
       data.menu || "",
@@ -48,7 +48,7 @@ function getOrCreateSheet_() {
     sheet.appendRow([
       "Data",
       "Nome",
-      "Email",
+      "Telefono",
       "Partecipa",
       "Ospiti",
       "Menu",

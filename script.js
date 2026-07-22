@@ -543,7 +543,6 @@
     const payload = {
       name,
       phone: String(data.get("phone") || "").trim(),
-      email: "",
       attendance: attending ? "si" : "no",
       guests,
       menu: String(data.get("menu") || ""),
