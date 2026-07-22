@@ -1,10 +1,24 @@
 (() => {
-  // Incolla qui l’URL della web app Google Apps Script (dopo il deploy)
   const SHEETS_WEBAPP_URL =
     "https://script.google.com/macros/s/AKfycbz3qm09G5z8cJtcPNmRQ_ZNO1H2H07xWgSW7c2spHNxVYtjVhcyAgPLa2IQUmfoQXE-/exec";
 
+  const ANIM_VARIANTS = ["classic", "cinematic", "light", "romantic"];
+  const PREVIEW_SECTIONS = ["details", "rsvp", "portrait"];
+
+  const params = new URLSearchParams(window.location.search);
+  const animParam = params.get("anim");
+  const anim = ANIM_VARIANTS.includes(animParam) ? animParam : "classic";
+  const debugMode = params.has("debug");
+  const previewParam = params.get("preview");
+  const previewSection = PREVIEW_SECTIONS.includes(previewParam) ? previewParam : null;
+  const previewEnvelope = previewParam !== null && !previewSection;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
+  const stage = document.getElementById("envelopeStage");
+  const petalsEl = document.getElementById("envelopePetals");
+  const animDebug = document.getElementById("animDebug");
   const invitation = document.getElementById("invitation");
   const form = document.getElementById("rsvpForm");
   const success = document.getElementById("rsvpSuccess");
@@ -19,14 +33,37 @@
 
   let opened = false;
   let musicStarted = false;
-  const previewParam = new URLSearchParams(window.location.search).get("preview");
-  const previewOpen = previewParam !== null;
-  const OPEN_MS = 1500;
+  let petalInterval = null;
   const MUSIC_VOLUME = 0.35;
-  // Cerimonia: 14 luglio 2027 ore 12:00 (ora italiana)
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
+  const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  document.body.classList.add(`anim-${anim}`);
+
+  /* ——— Debug switcher (?debug=1) ——— */
+  if (debugMode && animDebug) {
+    animDebug.hidden = false;
+    animDebug.querySelectorAll(".anim-debug__btn").forEach((btn) => {
+      if (btn.dataset.anim === anim) btn.classList.add("is-active");
+      btn.addEventListener("click", () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set("anim", btn.dataset.anim);
+        url.searchParams.set("debug", "1");
+        window.location.href = url.toString();
+      });
+    });
+  }
 
   document.body.classList.add("is-locked");
+
+  function parseMs(cssVar) {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim();
+    return parseInt(raw, 10) || 0;
+  }
+
+  function wait(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
 
   function pad(value) {
     return String(value).padStart(2, "0");
@@ -114,24 +151,139 @@
     updateMusicToggle();
   });
 
-  function openEnvelope() {
-    if (opened) return;
-    opened = true;
+  /* ——— Petals (SVG inline) ——— */
+  function createPetal() {
+    if (!petalsEl) return;
+    const petal = document.createElement("span");
+    petal.className = "envelope-petal";
+    petal.innerHTML =
+      '<svg width="11" height="13" viewBox="0 0 11 13" aria-hidden="true"><ellipse cx="5.5" cy="6.5" rx="4.5" ry="5.5" fill="#fffaf5" opacity="0.92"/><ellipse cx="5.5" cy="6.5" rx="2.8" ry="3.5" fill="#f3e6dc"/></svg>';
+    petal.style.left = `${Math.random() * 100}%`;
+    petal.style.setProperty("--petal-drift", `${(Math.random() - 0.5) * 140}px`);
+    petal.style.setProperty("--petal-spin", `${(Math.random() - 0.5) * 420}deg`);
+    petal.style.animationDuration = `${5.5 + Math.random() * 4.5}s`;
+    petal.style.animationDelay = `${Math.random() * 1.5}s`;
+    petalsEl.appendChild(petal);
+    petal.addEventListener("animationend", () => petal.remove());
+  }
 
-    envelope.disabled = true;
-    document.body.classList.add("is-opening-envelope");
-    fadeInMusic();
+  function startPetals(rateMs = 700) {
+    if (!petalsEl || reducedMotion) return;
+    for (let i = 0; i < 3; i += 1) createPetal();
+    if (petalInterval) clearInterval(petalInterval);
+    petalInterval = window.setInterval(createPetal, rateMs);
+  }
 
+  function stopPetals() {
+    if (petalInterval) {
+      clearInterval(petalInterval);
+      petalInterval = null;
+    }
+  }
+
+  /* ——— Cinematic 3D tilt (desktop only) ——— */
+  if (anim === "cinematic" && !isTouch && stage && envelope) {
+    envelope.addEventListener("mousemove", (event) => {
+      if (opened) return;
+      const rect = envelope.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width - 0.5;
+      const y = (event.clientY - rect.top) / rect.height - 0.5;
+      const max =
+        parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue("--anim-tilt-max")
+        ) || 6;
+      stage.style.transform = `rotateY(${x * max * 2}deg) rotateX(${-y * max * 2}deg)`;
+    });
+
+    envelope.addEventListener("mouseleave", () => {
+      if (!opened) stage.style.transform = "";
+    });
+  }
+
+  function revealInvitation(zoom = false) {
     invitation.hidden = false;
     void invitation.offsetWidth;
-    invitation.classList.add("is-revealed");
-    scene.classList.add("is-opening");
+    invitation.classList.add(zoom ? "is-revealed-zoom" : "is-revealed");
+  }
 
-    window.setTimeout(() => {
-      document.body.classList.remove("is-locked", "is-opening-envelope");
-      scene.remove();
-      observeReveals();
-    }, OPEN_MS);
+  function finishOpen() {
+    document.body.classList.remove("is-locked", "is-opening-envelope");
+    stopPetals();
+    scene.remove();
+    observeReveals();
+  }
+
+  function finishOpenInstant() {
+    invitation.hidden = false;
+    invitation.classList.add("is-revealed");
+    document.body.classList.remove("is-locked", "is-opening-envelope");
+    stopPetals();
+    scene.remove();
+    observeReveals();
+  }
+
+  /* ——— Variant orchestration ——— */
+  async function runClassic() {
+    scene.classList.add("is-flap-opening");
+    await wait(parseMs("--anim-classic-crossfade"));
+    revealInvitation();
+    scene.classList.add("is-leaving");
+    await wait(parseMs("--anim-classic-leave"));
+    finishOpen();
+  }
+
+  async function runLight() {
+    scene.classList.add("is-seal-breaking");
+    await wait(parseMs("--anim-seal-break"));
+    scene.classList.add("is-flap-opening");
+    await wait(parseMs("--anim-flap-open"));
+    revealInvitation();
+    scene.classList.add("is-leaving");
+    await wait(parseMs("--anim-light-leave"));
+    finishOpen();
+  }
+
+  async function runCinematic() {
+    scene.classList.add("is-seal-breaking");
+    startPetals(550);
+    await wait(parseMs("--anim-seal-break"));
+    scene.classList.add("is-flap-opening");
+    await wait(parseMs("--anim-flap-open"));
+    scene.classList.add("is-letter-rising");
+    await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
+    revealInvitation(true);
+    scene.classList.add("is-zooming");
+    await wait(parseMs("--anim-scene-zoom"));
+    finishOpen();
+  }
+
+  async function runRomantic() {
+    scene.classList.add("is-blooming", "is-flap-opening");
+    await wait(parseMs("--anim-romantic-flap"));
+    scene.classList.add("is-flashing");
+    revealInvitation();
+    scene.classList.add("is-leaving");
+    await wait(parseMs("--anim-romantic-leave"));
+    finishOpen();
+  }
+
+  async function openEnvelope() {
+    if (opened) return;
+    opened = true;
+    envelope.disabled = true;
+    fadeInMusic();
+
+    if (reducedMotion) {
+      finishOpenInstant();
+      return;
+    }
+
+    document.body.classList.add("is-opening-envelope");
+
+    if (anim === "cinematic") await runCinematic();
+    else if (anim === "light") await runLight();
+    else if (anim === "romantic") await runRomantic();
+    else await runClassic();
   }
 
   envelope.addEventListener("click", openEnvelope);
@@ -142,7 +294,13 @@
     }
   });
 
-  if (previewOpen) {
+  /* Romantic idle petal snowfall */
+  if (anim === "romantic" && !previewSection && !reducedMotion) {
+    startPetals(950);
+  }
+
+  /* ——— Preview modes ——— */
+  if (previewSection) {
     opened = true;
     envelope.disabled = true;
     scene.remove();
@@ -150,23 +308,34 @@
     invitation.classList.add("is-revealed");
     document.body.classList.remove("is-locked");
     document.body.classList.add("is-preview");
-    fadeInMusic();
     invitation.querySelectorAll(".section, .footer").forEach((el) => {
       el.classList.add("reveal", "is-visible");
     });
-
-    if (previewParam === "details" || previewParam === "rsvp" || previewParam === "portrait") {
-      document.body.classList.add(`preview-${previewParam}`);
-      const hero = invitation.querySelector(".hero");
-      if (hero) hero.style.display = "none";
-      invitation.querySelectorAll(".section, .footer").forEach((el) => {
-        const keep =
-          (previewParam === "details" && (el.classList.contains("details") || el.classList.contains("story"))) ||
-          (previewParam === "rsvp" && el.classList.contains("rsvp")) ||
-          (previewParam === "portrait" && el.classList.contains("portrait"));
-        if (!keep) el.style.display = "none";
-      });
-    }
+    document.body.classList.add(`preview-${previewSection}`);
+    const hero = invitation.querySelector(".hero");
+    if (hero) hero.style.display = "none";
+    invitation.querySelectorAll(".section, .footer").forEach((el) => {
+      const keep =
+        (previewSection === "details" &&
+          (el.classList.contains("details") || el.classList.contains("story"))) ||
+        (previewSection === "rsvp" && el.classList.contains("rsvp")) ||
+        (previewSection === "portrait" && el.classList.contains("portrait"));
+      if (!keep) el.style.display = "none";
+    });
+  } else if (previewEnvelope) {
+    document.body.classList.add("is-preview-envelope");
+    if (anim === "romantic" && !reducedMotion) startPetals(950);
+  } else if (previewParam !== null) {
+    opened = true;
+    envelope.disabled = true;
+    scene.remove();
+    invitation.hidden = false;
+    invitation.classList.add("is-revealed");
+    document.body.classList.remove("is-locked");
+    document.body.classList.add("is-preview");
+    invitation.querySelectorAll(".section, .footer").forEach((el) => {
+      el.classList.add("reveal", "is-visible");
+    });
   }
 
   function toggleGuestsField() {

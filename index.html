@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=13" />
+  <link rel="stylesheet" href="styles.css?v=14" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -65,12 +65,38 @@
     </div>
     <p class="envelope-hint" id="envelopeHint">Tocca per aprire</p>
 
+    <div class="envelope-petals" id="envelopePetals" aria-hidden="true"></div>
+    <div class="envelope-scene__glow" aria-hidden="true"></div>
+    <div class="envelope-scene__flash" aria-hidden="true"></div>
+
     <button type="button" class="envelope" id="envelope" aria-label="Apri la busta d'invito">
-      <span class="envelope__stage">
-        <img class="envelope__closed" src="images/envelope-closed.png?v=9" alt="" draggable="false" />
+      <span class="envelope__stage" id="envelopeStage">
+        <img class="envelope__open" src="images/envelope-open.png?v=14" alt="" draggable="false" />
+        <img class="envelope__closed" src="images/envelope-closed.png?v=14" alt="" draggable="false" />
+        <div class="envelope__letter" aria-hidden="true">
+          <span class="envelope__letter-monogram">G &amp; M</span>
+        </div>
+        <div class="envelope__seal" aria-hidden="true">
+          <svg class="envelope__seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" fill="var(--wax)" opacity="0.95"/>
+            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,250,240,0.35)" stroke-width="1.5"/>
+            <text x="50" y="54" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#fffaf0">G&amp;M</text>
+          </svg>
+          <span class="envelope__sparkle envelope__sparkle--1" aria-hidden="true"></span>
+          <span class="envelope__sparkle envelope__sparkle--2" aria-hidden="true"></span>
+          <span class="envelope__sparkle envelope__sparkle--3" aria-hidden="true"></span>
+        </div>
       </span>
     </button>
   </div>
+
+  <nav class="anim-debug" id="animDebug" hidden aria-label="Selettore animazione busta">
+    <span class="anim-debug__label">Anim</span>
+    <button type="button" class="anim-debug__btn" data-anim="classic">Classic</button>
+    <button type="button" class="anim-debug__btn" data-anim="cinematic">Cinematic</button>
+    <button type="button" class="anim-debug__btn" data-anim="light">Light</button>
+    <button type="button" class="anim-debug__btn" data-anim="romantic">Romantic</button>
+  </nav>
 
   <!-- Invitation content -->
   <main class="invitation" id="invitation" hidden>
@@ -324,6 +350,6 @@
     <span class="music-toggle__icon music-toggle__icon--off" aria-hidden="true">♩</span>
   </button>
 
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=14"></script>
 </body>
 </html>
