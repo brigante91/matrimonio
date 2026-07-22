@@ -268,16 +268,6 @@ body.anim-3d-cinema .envelope__closed {
   -webkit-user-drag: none;
 }
 
-.envelope__closed {
-  /* Fill width more; keep the wider/shorter closed asset centered */
-  object-fit: contain;
-  object-position: center 46%;
-  width: 108%;
-  max-width: none;
-  left: -4%;
-  right: auto;
-}
-
 .envelope__stage > picture,
 .envelope__frame {
   position: absolute;
@@ -303,6 +293,13 @@ body.anim-3d-cinema .envelope__closed {
 .envelope__closed {
   z-index: 2;
   opacity: 1;
+  inset: auto;
+  top: 3%;
+  left: -6%;
+  width: 112%;
+  height: 90%;
+  object-fit: contain;
+  object-position: center;
   transition:
     opacity var(--anim-classic-crossfade) var(--ease-out),
     clip-path var(--anim-flap-open) var(--ease-out),
