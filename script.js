@@ -26,6 +26,7 @@
   const attendanceInputs = form.querySelectorAll('input[name="attendance"]');
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
+  const musicToggleLabel = document.getElementById("musicToggleLabel");
   const submitBtn = document.getElementById("rsvpSubmit");
   const errorEl = document.getElementById("rsvpError");
   const countdownEl = document.getElementById("countdown");
@@ -113,8 +114,12 @@
       if (!bgMusic || bgMusic.paused) return;
       const t = Math.min(1, (now - start) / duration);
       bgMusic.volume = MUSIC_VOLUME * t;
+      syncMusicToggle();
       if (t < 1) musicFadeFrame = requestAnimationFrame(step);
-      else bgMusic.volume = MUSIC_VOLUME;
+      else {
+        bgMusic.volume = MUSIC_VOLUME;
+        syncMusicToggle();
+      }
     };
 
     if (musicFadeFrame) cancelAnimationFrame(musicFadeFrame);
@@ -134,7 +139,7 @@
       musicUnlocked = true;
       musicStarted = true;
       if (musicToggle) musicToggle.hidden = false;
-      updateMusicToggle();
+      syncMusicToggle();
       fadeInVolume();
     } catch {
       if (!musicUnlocked) musicStarted = false;
@@ -149,6 +154,8 @@
       bgMusic.volume = 0;
       await bgMusic.play();
       musicStarted = true;
+      if (musicToggle) musicToggle.hidden = false;
+      syncMusicToggle();
     } catch {
       musicStarted = false;
     }
@@ -158,28 +165,35 @@
     unlockMusic();
   }
 
-  function updateMusicToggle() {
-    if (!bgMusic || !musicToggle) return;
-    const muted = bgMusic.paused || bgMusic.muted || bgMusic.volume === 0;
-    musicToggle.classList.toggle("is-muted", muted);
-    musicToggle.setAttribute("aria-pressed", muted ? "false" : "true");
+  function isMusicAudible() {
+    return Boolean(bgMusic && !bgMusic.paused && !bgMusic.muted && bgMusic.volume > 0.01);
+  }
+
+  function syncMusicToggle() {
+    if (!musicToggle) return;
+    const playing = isMusicAudible();
+    musicToggle.classList.toggle("is-playing", playing);
+    musicToggle.classList.toggle("is-paused", !playing);
+    musicToggle.setAttribute("aria-pressed", playing ? "true" : "false");
     musicToggle.setAttribute(
       "aria-label",
-      muted ? "Attiva la musica" : "Disattiva la musica"
+      playing ? "Metti in pausa la musica" : "Attiva la musica"
     );
-    const label = musicToggle.querySelector(".music-toggle__label");
-    if (label) label.textContent = muted ? "Musica off" : "Musica on";
+    if (musicToggleLabel) {
+      musicToggleLabel.textContent = playing ? "In riproduzione" : "In pausa";
+    }
   }
 
   if (musicToggle) {
-    musicToggle.addEventListener("click", () => {
+    musicToggle.addEventListener("click", async () => {
       if (!bgMusic) return;
-      if (bgMusic.paused || bgMusic.muted || bgMusic.volume === 0) {
-        unlockMusic();
-      } else {
+      if (isMusicAudible()) {
         bgMusic.pause();
+        syncMusicToggle();
+        return;
       }
-      updateMusicToggle();
+      await unlockMusic();
+      syncMusicToggle();
     });
   }
 
