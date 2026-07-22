@@ -2,7 +2,7 @@
   const SHEETS_WEBAPP_URL =
     "https://script.google.com/macros/s/AKfycbz3qm09G5z8cJtcPNmRQ_ZNO1H2H07xWgSW7c2spHNxVYtjVhcyAgPLa2IQUmfoQXE-/exec";
 
-  const ANIM_VARIANTS = ["classic", "cinematic", "light", "romantic"];
+  const ANIM_VARIANTS = ["classic", "cinematic", "light", "romantic", "3d-cinema"];
   const PREVIEW_SECTIONS = ["details", "rsvp", "portrait"];
 
   const params = new URLSearchParams(window.location.search);
@@ -257,6 +257,19 @@
     finishOpen();
   }
 
+  async function run3DCinema() {
+    scene.classList.add("is-seal-breaking");
+    await wait(parseMs("--anim-seal-break"));
+    scene.classList.add("is-flap-opening");
+    await wait(parseMs("--anim-flap-open"));
+    scene.classList.add("is-letter-rising");
+    await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
+    revealInvitation(true);
+    scene.classList.add("is-zooming");
+    await wait(parseMs("--anim-scene-zoom"));
+    finishOpen();
+  }
+
   async function runRomantic() {
     scene.classList.add("is-blooming", "is-flap-opening");
     await wait(parseMs("--anim-romantic-flap"));
@@ -281,6 +294,7 @@
     document.body.classList.add("is-opening-envelope");
 
     if (anim === "cinematic") await runCinematic();
+    else if (anim === "3d-cinema") await run3DCinema();
     else if (anim === "light") await runLight();
     else if (anim === "romantic") await runRomantic();
     else await runClassic();
