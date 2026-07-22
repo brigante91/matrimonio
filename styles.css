@@ -1241,7 +1241,7 @@ body.is-opening-envelope .invitation[hidden] {
   position: fixed;
   bottom: max(1.15rem, env(safe-area-inset-bottom, 0px) + 0.85rem);
   right: max(1rem, env(safe-area-inset-right, 0px) + 0.75rem);
-  z-index: 90;
+  z-index: 110;
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;

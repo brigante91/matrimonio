@@ -48,7 +48,7 @@
   let musicPausedByUser = false;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const MUSIC_VOLUME = isTouch ? 0.0001 : 0.0001;
+  const MUSIC_VOLUME = isTouch ? 0.035 : 0.07;
   const MUSIC_PREF_KEY = "wedding-music-on";
 
   document.body.classList.add(`anim-${anim}`);
@@ -210,7 +210,8 @@
   }
 
   function isMusicAudible() {
-    return Boolean(bgMusic && !bgMusic.paused && !bgMusic.muted && bgMusic.volume > 0.01);
+    if (!bgMusic || bgMusic.paused || bgMusic.muted || musicPausedByUser) return false;
+    return bgMusic.volume > 0;
   }
 
   function syncMusicToggle() {
