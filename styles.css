@@ -302,19 +302,21 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center 42%;
   pointer-events: none;
   display: none;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-.envelope__back { z-index: 1; }
+.envelope__interior { z-index: 1; opacity: 0; }
 .envelope__letter { z-index: 2; }
-.envelope__front { z-index: 3; }
+.envelope__body { z-index: 3; }
 .envelope__flap {
   z-index: 4;
-  transform-origin: top center;
+  clip-path: polygon(0 0, 100% 0, 50% 40.5%);
+  transform-origin: 50% 40.5%;
+  backface-visibility: hidden;
   will-change: transform;
   transition: transform var(--anim-flap-open) cubic-bezier(0.4, 0, 0.2, 1), z-index 0s var(--anim-flap-open);
 }
@@ -326,6 +328,10 @@ body.anim-3d-cinema .envelope__part {
 body.anim-3d-cinema .envelope__open,
 body.anim-3d-cinema .envelope__closed {
   display: none;
+}
+
+body.anim-3d-cinema .envelope__stage {
+  animation: envelopeBreathe 4.5s ease-in-out infinite;
 }
 
 .envelope__open,
@@ -570,8 +576,17 @@ body.anim-cinematic .invitation.is-revealed-zoom {
 }
 
 /* ——— Variant: 3D Cinema (layered envelope + physical flap) ——— */
-body.anim-3d-cinema .envelope__seal { opacity: 1; visibility: visible; }
-body.anim-3d-cinema .envelope-scene.is-seal-breaking .envelope__seal-svg { animation: sealCrack var(--anim-seal-break) var(--ease-out) forwards; }
+body.anim-3d-cinema .envelope__seal { opacity: 0; visibility: hidden; }
+
+body.anim-3d-cinema .envelope-scene.is-seal-breaking .envelope__flap {
+  animation: sealFlapWiggle var(--anim-seal-break) var(--ease-out);
+}
+
+@keyframes sealFlapWiggle {
+  0%, 100% { transform: rotateX(0deg); }
+  35% { transform: rotateX(-4deg); }
+  70% { transform: rotateX(2deg); }
+}
 
 body.anim-3d-cinema .envelope__letter {
   opacity: 1;
@@ -579,8 +594,18 @@ body.anim-3d-cinema .envelope__letter {
   transform: translate(-50%, 20%) scale(0.88) rotate(-2deg);
 }
 
+body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__body {
+  opacity: 0;
+  transition: opacity calc(var(--anim-flap-open) * 0.35) var(--ease-out);
+}
+
+body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__interior {
+  opacity: 1;
+  transition: opacity calc(var(--anim-flap-open) * 0.45) var(--ease-out);
+}
+
 body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__flap {
-  transform: rotateX(180deg);
+  transform: rotateX(-165deg);
   z-index: 1;
 }
 
