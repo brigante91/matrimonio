@@ -190,6 +190,7 @@ textarea {
   display: block;
   width: 100%;
   height: 100%;
+  background: var(--paper);
   transform-style: preserve-3d;
   perspective: 1200px;
   transition: transform 0.35s var(--ease-out);
@@ -200,8 +201,9 @@ textarea {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 42%;
+  object-fit: contain;
+  object-position: center;
+  background: var(--paper);
   pointer-events: none;
   display: none;
   user-select: none;
@@ -239,21 +241,12 @@ body.anim-3d-cinema .envelope__stage {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 42%;
+  object-fit: contain;
+  object-position: center;
+  background: var(--paper);
   user-select: none;
   pointer-events: none;
   -webkit-user-drag: none;
-}
-
-@media (min-aspect-ratio: 0.8) {
-  .envelope__open,
-  .envelope__closed,
-  .envelope__part {
-    object-fit: contain;
-    background: var(--paper);
-    object-position: center;
-  }
 }
 
 .envelope__open {
