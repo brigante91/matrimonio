@@ -486,20 +486,33 @@
     guestsField.querySelector("input").disabled = !attending;
   }
 
-  function toggleAllergiesField() {
+  function toggleAllergiesField({ focusDetails = false } = {}) {
     const hasAllergies = form.querySelector('input[name="allergies"]:checked')?.value === "si";
-    const details = allergiesField.querySelector("textarea");
+    const details = document.getElementById("allergyDetails");
+    if (!allergiesField || !details) return;
+
     allergiesField.hidden = !hasAllergies;
-    details.disabled = !hasAllergies;
     details.required = hasAllergies;
-    if (!hasAllergies) details.value = "";
+    details.removeAttribute("disabled");
+    details.readOnly = false;
+
+    if (!hasAllergies) {
+      details.value = "";
+      return;
+    }
+
+    if (focusDetails) {
+      requestAnimationFrame(() => {
+        details.focus({ preventScroll: true });
+      });
+    }
   }
 
   attendanceInputs.forEach((input) => {
     input.addEventListener("change", toggleGuestsField);
   });
   allergyInputs.forEach((input) => {
-    input.addEventListener("change", toggleAllergiesField);
+    input.addEventListener("change", () => toggleAllergiesField({ focusDetails: true }));
   });
   toggleGuestsField();
   toggleAllergiesField();
