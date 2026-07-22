@@ -11,10 +11,19 @@
   <link rel="icon" href="favicon-32.png?v=8" type="image/png" sizes="32x32" />
   <link rel="icon" href="favicon.png?v=8" type="image/png" sizes="48x48" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=8" sizes="180x180" />
+  <link rel="preload" as="image" href="images/envelope-closed.webp?v=29" type="image/webp" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=28" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap"
+    rel="stylesheet"
+    media="print"
+    onload="this.media='all'"
+  />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  </noscript>
+  <link rel="stylesheet" href="styles.css?v=29" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -27,14 +36,20 @@
 
     <button type="button" class="envelope" id="envelope" aria-label="Apri la busta d'invito">
       <span class="envelope__stage" id="envelopeStage">
-        <img class="envelope__part envelope__interior" src="images/envelope-open.png?v=24" alt="" draggable="false" />
+        <img class="envelope__part envelope__interior" data-src="images/envelope-open.webp?v=29" alt="" draggable="false" />
         <div class="envelope__letter" aria-hidden="true">
           <span class="envelope__letter-monogram">G &amp; M</span>
         </div>
-        <img class="envelope__part envelope__body" src="images/envelope-closed.png?v=24" alt="" draggable="false" />
-        <img class="envelope__part envelope__flap" src="images/envelope-closed.png?v=24" alt="" draggable="false" />
-        <img class="envelope__open" src="images/envelope-open.png?v=24" alt="" draggable="false" />
-        <img class="envelope__closed" src="images/envelope-closed.png?v=24" alt="" draggable="false" />
+        <img class="envelope__part envelope__body" data-src="images/envelope-closed.webp?v=29" alt="" draggable="false" />
+        <img class="envelope__part envelope__flap" data-src="images/envelope-closed.webp?v=29" alt="" draggable="false" />
+        <picture class="envelope__frame envelope__frame--open">
+          <source data-srcset="images/envelope-open.webp?v=29" type="image/webp" />
+          <img class="envelope__open" data-src="images/envelope-open.png?v=29" alt="" draggable="false" decoding="async" />
+        </picture>
+        <picture class="envelope__frame envelope__frame--closed">
+          <source srcset="images/envelope-closed.webp?v=29" type="image/webp" />
+          <img class="envelope__closed" src="images/envelope-closed.png?v=29" alt="" width="960" height="1440" draggable="false" fetchpriority="high" decoding="async" />
+        </picture>
         <div class="envelope__seal" aria-hidden="true">
           <svg class="envelope__seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="46" fill="var(--wax)" opacity="0.95"/>
@@ -109,10 +124,12 @@
         <div class="portrait-frame__ring">
           <img
             class="portrait-frame__image"
-            src="images/sposi.png?v=10"
+            src="images/sposi.webp?v=29"
             alt="Illustrazione di Gianluca e Michela"
-            width="992"
-            height="1062"
+            width="900"
+            height="964"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <figcaption class="portrait-frame__caption">
@@ -150,17 +167,18 @@
           <p class="detail__place">Piazza San Rocco · Siano (SA)</p>
           <figure class="detail__illustration">
             <img
-              src="images/chiesa.png?v=9"
+              src="images/chiesa.webp?v=29"
               alt="Illustrazione della Chiesa di San Rocco a Siano"
-              width="1024"
-              height="1024"
+              width="1000"
+              height="1000"
               loading="lazy"
+              decoding="async"
             />
           </figure>
           <div class="detail__map">
             <iframe
               title="Mappa Chiesa di San Rocco, Siano"
-              src="https://www.google.com/maps?q=Piazza+San+Rocco,+Siano+SA&output=embed"
+              data-src="https://www.google.com/maps?q=Piazza+San+Rocco,+Siano+SA&output=embed"
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
               allowfullscreen
@@ -181,17 +199,18 @@
           <p class="detail__place">Via Roma, 19 · Calvanico</p>
           <figure class="detail__illustration">
             <img
-              src="images/tenuta.png?v=9"
+              src="images/tenuta.webp?v=29"
               alt="Illustrazione di Tenuta Leone a Calvanico"
-              width="1024"
-              height="1024"
+              width="1100"
+              height="734"
               loading="lazy"
+              decoding="async"
             />
           </figure>
           <div class="detail__map">
             <iframe
               title="Mappa Tenuta Leone, Calvanico"
-              src="https://www.google.com/maps?q=Tenuta+Leone,+Via+Roma+19,+84080+Calvanico&output=embed"
+              data-src="https://www.google.com/maps?q=Tenuta+Leone,+Via+Roma+19,+84080+Calvanico&output=embed"
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
               allowfullscreen
@@ -283,7 +302,7 @@
     </footer>
   </main>
 
-  <audio id="bgMusic" src="audio/background2.mp3" loop preload="auto" playsinline autoplay muted></audio>
+  <audio id="bgMusic" src="audio/background-lite.mp3" loop preload="none" playsinline></audio>
   <button type="button" class="music-toggle is-paused" id="musicToggle" aria-label="Attiva la musica" aria-pressed="false">
     <span class="music-toggle__disc" aria-hidden="true">
       <span class="music-toggle__bars">
@@ -297,6 +316,6 @@
     <span class="music-toggle__label" id="musicToggleLabel">In pausa</span>
   </button>
 
-  <script src="script.js?v=28"></script>
+  <script src="script.js?v=29"></script>
 </body>
 </html>

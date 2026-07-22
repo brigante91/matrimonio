@@ -53,6 +53,43 @@
   const MUSIC_PREF_KEY = "wedding-music-on";
 
   document.body.classList.add(`anim-${anim}`);
+  if (isTouch) document.body.classList.add("is-touch");
+
+  function hydrateDeferredSources(root = document) {
+    root.querySelectorAll("[data-src]").forEach((el) => {
+      const src = el.getAttribute("data-src");
+      if (!src || el.getAttribute("src") === src) return;
+      el.setAttribute("src", src);
+      el.removeAttribute("data-src");
+    });
+    root.querySelectorAll("[data-srcset]").forEach((el) => {
+      const srcset = el.getAttribute("data-srcset");
+      if (!srcset || el.getAttribute("srcset") === srcset) return;
+      el.setAttribute("srcset", srcset);
+      el.removeAttribute("data-srcset");
+    });
+  }
+
+  function prefetchInvitationAssets() {
+    hydrateDeferredSources(document.querySelector(".envelope__frame--open") || document);
+    const urls = [
+      "images/envelope-open.webp?v=29",
+      "images/sposi.webp?v=29",
+      "images/chiesa.webp?v=29",
+      "images/tenuta.webp?v=29",
+    ];
+    urls.forEach((url) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = url;
+    });
+  }
+
+  if (anim === "3d-cinema") {
+    hydrateDeferredSources(stage || document);
+  } else {
+    window.setTimeout(prefetchInvitationAssets, isTouch ? 700 : 350);
+  }
 
   /* ——— Debug switcher (?debug=1) ——— */
   if (debugMode && animDebug) {
@@ -291,6 +328,7 @@
     document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
     if (sceneFader && sceneFader.isConnected) sceneFader.remove();
+    hydrateDeferredSources(invitation);
     observeReveals();
   }
 
@@ -301,6 +339,7 @@
     document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
     if (sceneFader && sceneFader.isConnected) sceneFader.remove();
+    hydrateDeferredSources(invitation);
     observeReveals();
   }
 
@@ -317,6 +356,7 @@
 
     invitation.hidden = false;
     void invitation.offsetWidth;
+    prefetchInvitationAssets();
 
     if (stage) {
       stage.style.animation = "";
@@ -394,6 +434,7 @@
     if (opened) return;
     opened = true;
     envelope.disabled = true;
+    prefetchInvitationAssets();
     tryUnlockMusic();
 
     if (reducedMotion) {

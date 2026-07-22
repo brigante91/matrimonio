@@ -54,6 +54,25 @@
   --ease-dissolve: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Faster sequence on touch / narrow phones (connectivity + perceived speed) */
+@media (hover: none), (max-width: 820px) {
+  :root {
+    --anim-seal-break: 220ms;
+    --anim-flap-open: 620ms;
+    --anim-letter-rise: 380ms;
+    --anim-letter-pause: 60ms;
+    --anim-classic-crossfade: 720ms;
+    --anim-fader-in: 520ms;
+    --anim-fader-out: 720ms;
+    --anim-settle: 160ms;
+    --anim-romantic-flap: 620ms;
+  }
+}
+
+body.is-touch .envelope-scene.is-dissolving .envelope__stage {
+  filter: none;
+}
+
 *,
 *::before,
 *::after {
@@ -248,6 +267,19 @@ body.anim-3d-cinema .envelope__closed {
   pointer-events: none;
   -webkit-user-drag: none;
 }
+
+.envelope__stage > picture,
+.envelope__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.envelope__frame--open { z-index: 1; }
+.envelope__frame--closed { z-index: 2; }
 
 .envelope__open {
   z-index: 1;
