@@ -224,6 +224,13 @@ textarea {
   animation: floralDrift 8.5s ease-in-out infinite reverse 0.2s;
 }
 
+/* Su mobile i fiori d'angolo finiscono in mezzo allo schermo: busta pulita */
+@media (max-width: 768px), (max-height: 700px) and (orientation: portrait) {
+  .florals--envelope {
+    display: none;
+  }
+}
+
 .florals--hero {
   z-index: 0;
 }
