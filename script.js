@@ -542,7 +542,8 @@
     const guests = attending ? String(data.get("guests") || "1") : "";
     const payload = {
       name,
-      email: String(data.get("email") || "").trim(),
+      phone: String(data.get("phone") || "").trim(),
+      email: "",
       attendance: attending ? "si" : "no",
       guests,
       menu: String(data.get("menu") || ""),
