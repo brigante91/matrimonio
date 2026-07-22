@@ -1147,39 +1147,13 @@ body.has-opened .hero .ornament {
   height: auto;
 }
 
-.detail__map {
-  margin-top: 1.25rem;
-  border-radius: 0;
-  overflow: hidden;
-  border: 1px solid rgba(58, 52, 44, 0.12);
-  box-shadow: 0 8px 24px rgba(58, 52, 44, 0.08);
-  background: rgba(255, 255, 255, 0.55);
-}
-
-.detail__map iframe {
-  display: block;
-  width: 100%;
-  height: clamp(180px, 32vw, 220px);
-  border: 0;
-}
-
-.detail__map-link {
-  display: inline-block;
-  margin: 0.65rem 0 0.85rem;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--glicine-deep);
+.detail__maps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.1rem 0 0;
   text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.detail__map-link:hover {
-  color: var(--blush-deep);
-  border-bottom-color: currentColor;
+  box-sizing: border-box;
 }
 
 /* ——— RSVP ——— */
