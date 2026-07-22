@@ -14,58 +14,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=20" />
 </head>
 <body>
   <!-- Envelope overlay -->
   <div class="envelope-scene" id="envelopeScene" aria-label="Busta d'invito">
     <div class="envelope-atmosphere" aria-hidden="true"></div>
-    <div class="florals florals--envelope" aria-hidden="true">
-      <svg class="floral floral--tl" viewBox="0 0 200 220" fill="none">
-        <g opacity="0.88">
-          <path d="M98 210 C90 150 70 110 48 70" stroke="#b9c6ae" stroke-width="1.2" fill="none" opacity="0.75"/>
-          <ellipse cx="42" cy="58" rx="24" ry="15" transform="rotate(-25 42 58)" fill="#fffaf5" opacity="0.92"/>
-          <ellipse cx="58" cy="48" rx="19" ry="13" transform="rotate(20 58 48)" fill="#f7ebe3" opacity="0.85"/>
-          <ellipse cx="36" cy="42" rx="15" ry="11" transform="rotate(-10 36 42)" fill="#fff8f2" opacity="0.9"/>
-          <circle cx="48" cy="50" r="5" fill="#e8c4b4" opacity="0.8"/>
-          <ellipse cx="88" cy="120" rx="17" ry="10" transform="rotate(-40 88 120)" fill="#fffaf5" opacity="0.78"/>
-          <ellipse cx="102" cy="108" rx="14" ry="9" transform="rotate(15 102 108)" fill="#f3e6dc" opacity="0.72"/>
-          <circle cx="95" cy="114" r="3.5" fill="#d9b5a4" opacity="0.7"/>
-          <path d="M70 140 C55 130 40 132 28 145" stroke="#a8b79c" stroke-width="1.1" fill="none" opacity="0.65"/>
-          <ellipse cx="30" cy="148" rx="13" ry="7" transform="rotate(-30 30 148)" fill="#c5d1b8" opacity="0.5"/>
-        </g>
-      </svg>
-      <svg class="floral floral--tr" viewBox="0 0 200 220" fill="none">
-        <g opacity="0.86">
-          <path d="M90 210 C110 150 140 105 168 68" stroke="#b9c6ae" stroke-width="1.2" fill="none" opacity="0.75"/>
-          <ellipse cx="172" cy="54" rx="24" ry="15" transform="rotate(28 172 54)" fill="#fffaf5" opacity="0.92"/>
-          <ellipse cx="155" cy="46" rx="18" ry="12" transform="rotate(-18 155 46)" fill="#f7ebe3" opacity="0.85"/>
-          <ellipse cx="178" cy="40" rx="14" ry="10" transform="rotate(8 178 40)" fill="#fff8f2" opacity="0.9"/>
-          <circle cx="166" cy="48" r="5" fill="#e8c4b4" opacity="0.8"/>
-          <ellipse cx="120" cy="118" rx="16" ry="9" transform="rotate(35 120 118)" fill="#fffaf5" opacity="0.76"/>
-          <circle cx="118" cy="116" r="3.2" fill="#d9b5a4" opacity="0.7"/>
-          <ellipse cx="160" cy="150" rx="12" ry="6" transform="rotate(25 160 150)" fill="#c5d1b8" opacity="0.48"/>
-        </g>
-      </svg>
-      <svg class="floral floral--bl" viewBox="0 0 180 140" fill="none">
-        <ellipse cx="40" cy="90" rx="28" ry="17" transform="rotate(-30 40 90)" fill="#fffaf5" opacity="0.8"/>
-        <ellipse cx="58" cy="78" rx="21" ry="13" transform="rotate(18 58 78)" fill="#f7ebe3" opacity="0.75"/>
-        <circle cx="48" cy="84" r="4.5" fill="#e8c4b4" opacity="0.72"/>
-        <ellipse cx="110" cy="110" rx="19" ry="11" transform="rotate(-15 110 110)" fill="#fff8f2" opacity="0.7"/>
-        <circle cx="108" cy="108" r="3" fill="#d9b5a4" opacity="0.65"/>
-        <ellipse cx="20" cy="115" rx="15" ry="7" transform="rotate(-40 20 115)" fill="#c5d1b8" opacity="0.42"/>
-      </svg>
-      <svg class="floral floral--br" viewBox="0 0 180 140" fill="none">
-        <ellipse cx="140" cy="88" rx="26" ry="16" transform="rotate(25 140 88)" fill="#fffaf5" opacity="0.8"/>
-        <ellipse cx="122" cy="76" rx="19" ry="12" transform="rotate(-20 122 76)" fill="#f7ebe3" opacity="0.75"/>
-        <circle cx="132" cy="82" r="4.5" fill="#e8c4b4" opacity="0.72"/>
-        <ellipse cx="70" cy="112" rx="17" ry="10" transform="rotate(12 70 112)" fill="#fff8f2" opacity="0.68"/>
-        <circle cx="70" cy="110" r="3" fill="#d9b5a4" opacity="0.65"/>
-      </svg>
-    </div>
     <p class="envelope-hint" id="envelopeHint">Tocca per aprire</p>
 
-    <div class="envelope-petals" id="envelopePetals" aria-hidden="true"></div>
     <div class="envelope-scene__glow" aria-hidden="true"></div>
     <div class="envelope-scene__flash" aria-hidden="true"></div>
 
@@ -106,38 +62,6 @@
   <main class="invitation" id="invitation" hidden>
     <header class="hero">
       <div class="hero__atmosphere" aria-hidden="true"></div>
-      <div class="florals florals--hero" aria-hidden="true">
-        <svg class="floral floral--hero-l" viewBox="0 0 260 420" fill="none">
-          <path d="M40 0 C55 80 30 160 70 240 C95 290 60 340 90 420" stroke="#b9c6ae" stroke-width="1.2" opacity="0.55"/>
-          <ellipse cx="48" cy="70" rx="30" ry="17" transform="rotate(-35 48 70)" fill="#fffaf5" opacity="0.9"/>
-          <ellipse cx="68" cy="58" rx="23" ry="14" transform="rotate(18 68 58)" fill="#f7ebe3" opacity="0.82"/>
-          <ellipse cx="42" cy="52" rx="17" ry="12" fill="#fff8f2" opacity="0.88"/>
-          <circle cx="55" cy="60" r="6" fill="#e8c4b4" opacity="0.75"/>
-          <ellipse cx="95" cy="160" rx="25" ry="15" transform="rotate(25 95 160)" fill="#fffaf5" opacity="0.82"/>
-          <ellipse cx="78" cy="148" rx="19" ry="12" transform="rotate(-20 78 148)" fill="#f3e6dc" opacity="0.75"/>
-          <circle cx="88" cy="154" r="5" fill="#d9b5a4" opacity="0.7"/>
-          <ellipse cx="55" cy="230" rx="21" ry="13" transform="rotate(-15 55 230)" fill="#fffaf5" opacity="0.78"/>
-          <circle cx="55" cy="228" r="4" fill="#e8c4b4" opacity="0.65"/>
-          <ellipse cx="30" cy="120" rx="15" ry="7" transform="rotate(-50 30 120)" fill="#c5d1b8" opacity="0.4"/>
-          <ellipse cx="110" cy="210" rx="14" ry="7" transform="rotate(40 110 210)" fill="#c5d1b8" opacity="0.35"/>
-          <ellipse cx="70" cy="300" rx="23" ry="14" transform="rotate(10 70 300)" fill="#fff8f2" opacity="0.76"/>
-          <circle cx="70" cy="298" r="4.5" fill="#d9b5a4" opacity="0.65"/>
-        </svg>
-        <svg class="floral floral--hero-r" viewBox="0 0 260 420" fill="none">
-          <path d="M220 0 C200 90 235 170 190 250 C165 300 205 350 170 420" stroke="#b9c6ae" stroke-width="1.2" opacity="0.55"/>
-          <ellipse cx="210" cy="65" rx="30" ry="17" transform="rotate(30 210 65)" fill="#fffaf5" opacity="0.9"/>
-          <ellipse cx="190" cy="54" rx="23" ry="14" transform="rotate(-22 190 54)" fill="#f7ebe3" opacity="0.82"/>
-          <ellipse cx="218" cy="48" rx="16" ry="11" fill="#fff8f2" opacity="0.88"/>
-          <circle cx="205" cy="56" r="6" fill="#e8c4b4" opacity="0.75"/>
-          <ellipse cx="165" cy="155" rx="25" ry="15" transform="rotate(-28 165 155)" fill="#fffaf5" opacity="0.82"/>
-          <circle cx="168" cy="152" r="5" fill="#d9b5a4" opacity="0.7"/>
-          <ellipse cx="200" cy="235" rx="21" ry="13" transform="rotate(18 200 235)" fill="#fffaf5" opacity="0.78"/>
-          <circle cx="200" cy="233" r="4" fill="#e8c4b4" opacity="0.65"/>
-          <ellipse cx="230" cy="125" rx="15" ry="7" transform="rotate(45 230 125)" fill="#c5d1b8" opacity="0.4"/>
-          <ellipse cx="185" cy="295" rx="23" ry="14" transform="rotate(-12 185 295)" fill="#fff8f2" opacity="0.76"/>
-          <circle cx="185" cy="293" r="4.5" fill="#d9b5a4" opacity="0.65"/>
-        </svg>
-      </div>
       <p class="hero__kicker">Con immensa gioia</p>
       <h1 class="hero__names">
         <span class="hero__name">Gianluca</span>
@@ -363,6 +287,6 @@
     <span class="music-toggle__icon music-toggle__icon--off" aria-hidden="true">♩</span>
   </button>
 
-  <script src="script.js?v=18"></script>
+  <script src="script.js?v=19"></script>
 </body>
 </html>

@@ -17,7 +17,6 @@
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
   const stage = document.getElementById("envelopeStage");
-  const petalsEl = document.getElementById("envelopePetals");
   const animDebug = document.getElementById("animDebug");
   const invitation = document.getElementById("invitation");
   const form = document.getElementById("rsvpForm");
@@ -35,7 +34,6 @@
   let musicStarted = false;
   let musicUnlocked = false;
   let musicFadeFrame = null;
-  let petalInterval = null;
   const MUSIC_VOLUME = 0.22;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
@@ -124,7 +122,8 @@
   }
 
   async function unlockMusic() {
-    if (!bgMusic || musicUnlocked) return;
+    if (!bgMusic) return;
+    if (musicUnlocked && !bgMusic.paused && !bgMusic.muted && bgMusic.volume > 0) return;
 
     try {
       bgMusic.muted = false;
@@ -138,8 +137,7 @@
       updateMusicToggle();
       fadeInVolume();
     } catch {
-      musicUnlocked = false;
-      musicStarted = false;
+      if (!musicUnlocked) musicStarted = false;
     }
   }
 
@@ -173,43 +171,13 @@
 
   musicToggle.addEventListener("click", () => {
     if (!bgMusic) return;
-    if (bgMusic.paused || bgMusic.muted) {
+    if (bgMusic.paused || bgMusic.muted || bgMusic.volume === 0) {
       unlockMusic();
     } else {
       bgMusic.pause();
     }
     updateMusicToggle();
   });
-
-  /* ——— Petals (SVG inline) ——— */
-  function createPetal() {
-    if (!petalsEl) return;
-    const petal = document.createElement("span");
-    petal.className = "envelope-petal";
-    petal.innerHTML =
-      '<svg width="11" height="13" viewBox="0 0 11 13" aria-hidden="true"><ellipse cx="5.5" cy="6.5" rx="4.5" ry="5.5" fill="#fffaf5" opacity="0.92"/><ellipse cx="5.5" cy="6.5" rx="2.8" ry="3.5" fill="#f3e6dc"/></svg>';
-    petal.style.left = `${Math.random() * 100}%`;
-    petal.style.setProperty("--petal-drift", `${(Math.random() - 0.5) * 140}px`);
-    petal.style.setProperty("--petal-spin", `${(Math.random() - 0.5) * 420}deg`);
-    petal.style.animationDuration = `${5.5 + Math.random() * 4.5}s`;
-    petal.style.animationDelay = `${Math.random() * 1.5}s`;
-    petalsEl.appendChild(petal);
-    petal.addEventListener("animationend", () => petal.remove());
-  }
-
-  function startPetals(rateMs = 700) {
-    if (!petalsEl || reducedMotion) return;
-    for (let i = 0; i < 3; i += 1) createPetal();
-    if (petalInterval) clearInterval(petalInterval);
-    petalInterval = window.setInterval(createPetal, rateMs);
-  }
-
-  function stopPetals() {
-    if (petalInterval) {
-      clearInterval(petalInterval);
-      petalInterval = null;
-    }
-  }
 
   /* ——— Cinematic 3D tilt (desktop only) ——— */
   if (anim === "cinematic" && !isTouch && stage && envelope) {
@@ -238,7 +206,6 @@
 
   function finishOpen() {
     document.body.classList.remove("is-locked", "is-opening-envelope");
-    stopPetals();
     scene.remove();
     observeReveals();
   }
@@ -247,7 +214,6 @@
     invitation.hidden = false;
     invitation.classList.add("is-revealed");
     document.body.classList.remove("is-locked", "is-opening-envelope");
-    stopPetals();
     scene.remove();
     observeReveals();
   }
@@ -275,7 +241,6 @@
 
   async function runCinematic() {
     scene.classList.add("is-seal-breaking");
-    startPetals(550);
     await wait(parseMs("--anim-seal-break"));
     scene.classList.add("is-flap-opening");
     await wait(parseMs("--anim-flap-open"));
@@ -340,17 +305,14 @@
 
   /* Musica: preload muto al load, volume al primo gesto (tap sulla busta o pagina) */
   primeMusic();
+  const onFirstGesture = () => unlockMusic();
   ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
-    document.addEventListener(eventName, () => unlockMusic(), {
+    document.addEventListener(eventName, onFirstGesture, {
+      once: true,
       passive: true,
       capture: true,
     });
   });
-
-  /* Romantic idle petal snowfall */
-  if (anim === "romantic" && !previewSection && !reducedMotion) {
-    startPetals(950);
-  }
 
   /* ——— Preview modes ——— */
   if (previewSection) {
@@ -377,7 +339,6 @@
     });
   } else if (previewEnvelope) {
     document.body.classList.add("is-preview-envelope");
-    if (anim === "romantic" && !reducedMotion) startPetals(950);
   } else if (previewParam !== null) {
     opened = true;
     envelope.disabled = true;

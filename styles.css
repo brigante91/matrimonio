@@ -126,34 +126,6 @@ textarea {
   z-index: 6;
 }
 
-.envelope-petals {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 5;
-}
-
-.envelope-petal {
-  position: absolute;
-  top: -8%;
-  opacity: 0.75;
-  animation: petalFall linear forwards;
-  will-change: transform, opacity;
-}
-
-@keyframes petalFall {
-  0% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
-    opacity: 0;
-  }
-  8% { opacity: 0.8; }
-  100% {
-    transform: translate3d(var(--petal-drift, 0px), 115vh, 0) rotate(var(--petal-spin, 180deg));
-    opacity: 0;
-  }
-}
-
 .envelope-hint {
   position: absolute;
   bottom: max(1.5rem, env(safe-area-inset-bottom, 0px) + 1.25rem);
@@ -174,86 +146,6 @@ textarea {
 @keyframes hintPulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
-}
-
-/* ——— Soft pastel florals ——— */
-.florals {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 1;
-}
-
-.floral {
-  position: absolute;
-  display: block;
-  filter: saturate(0.92);
-  transition: transform 1.1s var(--ease-out), filter 1.1s var(--ease-out);
-}
-
-.florals--envelope {
-  transition: opacity 0.85s var(--ease-out), transform 1.1s var(--ease-out);
-}
-
-.florals--envelope .floral--tl {
-  top: -1%;
-  left: -4%;
-  width: min(48vw, 220px);
-  animation: floralDrift 8s ease-in-out infinite;
-}
-
-.florals--envelope .floral--tr {
-  top: -2%;
-  right: -4%;
-  width: min(48vw, 220px);
-  animation: floralDrift 9s ease-in-out infinite reverse;
-}
-
-.florals--envelope .floral--bl {
-  bottom: 1%;
-  left: -3%;
-  width: min(42vw, 190px);
-  animation: floralDrift 7.5s ease-in-out infinite 0.4s;
-}
-
-.florals--envelope .floral--br {
-  bottom: 2%;
-  right: -3%;
-  width: min(42vw, 190px);
-  animation: floralDrift 8.5s ease-in-out infinite reverse 0.2s;
-}
-
-/* Su mobile i fiori d'angolo finiscono in mezzo allo schermo: busta pulita */
-@media (max-width: 768px), (max-height: 700px) and (orientation: portrait) {
-  .florals--envelope {
-    display: none;
-  }
-}
-
-.florals--hero {
-  z-index: 0;
-}
-
-.florals--hero .floral--hero-l {
-  top: 2%;
-  left: -6%;
-  width: min(52vw, 280px);
-  height: auto;
-  animation: floralDrift 10s ease-in-out infinite;
-}
-
-.florals--hero .floral--hero-r {
-  top: 4%;
-  right: -6%;
-  width: min(52vw, 280px);
-  height: auto;
-  animation: floralDrift 11s ease-in-out infinite reverse;
-}
-
-@keyframes floralDrift {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1.2deg); }
 }
 
 /* ——— Envelope button & stage ——— */
@@ -634,12 +526,7 @@ body.anim-3d-cinema .invitation.is-revealed-zoom {
   animation: invitationZoomIn var(--anim-scene-zoom) var(--ease-out) forwards;
 }
 
-/* ——— Variant: Romantic (bloom + flash + slow) ——— */
-body.anim-romantic .envelope-scene.is-blooming .florals--envelope .floral {
-  transform: scale(1.08);
-  filter: saturate(1) brightness(1.04);
-}
-
+/* ——— Variant: Romantic (glow + flash + slow) ——— */
 body.anim-romantic .envelope-scene.is-blooming .envelope-scene__glow {
   opacity: 1;
   transition: opacity 0.9s var(--ease-out);
@@ -682,13 +569,6 @@ body.anim-romantic .envelope-scene.is-leaving {
 .envelope-scene.is-opening .envelope-atmosphere,
 .envelope-scene.is-leaving .envelope-atmosphere {
   opacity: 0;
-}
-
-.envelope-scene.is-opening .florals--envelope,
-.envelope-scene.is-leaving .florals--envelope {
-  opacity: 0;
-  transform: scale(1.05);
-  transition: opacity 0.85s var(--ease-out), transform 1.1s var(--ease-out);
 }
 
 .envelope-scene.is-opening .envelope,
@@ -1434,7 +1314,6 @@ body.is-opening-envelope .invitation[hidden] {
     opacity: 1 !important;
   }
 
-  .envelope-petals,
   .envelope__seal,
   .envelope__letter,
   .envelope-scene__flash,
