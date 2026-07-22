@@ -1,6 +1,16 @@
 (() => {
-  const SHEETS_WEBAPP_URL =
-    "https://script.google.com/macros/s/AKfycbz3qm09G5z8cJtcPNmRQ_ZNO1H2H07xWgSW7c2spHNxVYtjVhcyAgPLa2IQUmfoQXE-/exec";
+  const SHEETS_ENDPOINT =
+    "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6M3FtMDlHNXo4Y0p0Y1BObVJRX1pOTzFIMkgwN3hXZ1NXN2Myc3BITnhWWXRqVmhjeUFnUExhMklRVW1mb1FYRS0vZXhlYw==";
+
+  function resolveEndpoint(encoded) {
+    try {
+      return atob(encoded);
+    } catch {
+      return "";
+    }
+  }
+
+  const SHEETS_WEBAPP_URL = resolveEndpoint(SHEETS_ENDPOINT);
 
   const ANIM_VARIANTS = ["classic", "cinematic", "light", "romantic", "3d-cinema"];
   const PREVIEW_SECTIONS = ["details", "rsvp", "portrait"];
@@ -36,6 +46,7 @@
   let musicUnlocked = false;
   let musicFadeFrame = null;
   const MUSIC_VOLUME = 0.22;
+  const MUSIC_PREF_KEY = "wedding-music-on";
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
@@ -126,9 +137,9 @@
     musicFadeFrame = requestAnimationFrame(step);
   }
 
-  async function unlockMusic() {
-    if (!bgMusic) return;
-    if (musicUnlocked && !bgMusic.paused && !bgMusic.muted && bgMusic.volume > 0) return;
+  async function tryUnlockMusic() {
+    if (!bgMusic || reducedMotion) return false;
+    if (isMusicAudible()) return true;
 
     try {
       bgMusic.muted = false;
@@ -139,10 +150,16 @@
       musicUnlocked = true;
       musicStarted = true;
       if (musicToggle) musicToggle.hidden = false;
-      syncMusicToggle();
       fadeInVolume();
+      try {
+        localStorage.setItem(MUSIC_PREF_KEY, "1");
+      } catch {
+        // ignore
+      }
+      syncMusicToggle();
+      return true;
     } catch {
-      if (!musicUnlocked) musicStarted = false;
+      return false;
     }
   }
 
@@ -161,8 +178,32 @@
     }
   }
 
-  function fadeInMusic() {
-    unlockMusic();
+  async function initMusic() {
+    if (!bgMusic) return;
+    if (musicToggle) musicToggle.hidden = false;
+
+    if (reducedMotion) {
+      syncMusicToggle();
+      return;
+    }
+
+    const returning = localStorage.getItem(MUSIC_PREF_KEY) === "1";
+    if (returning && (await tryUnlockMusic())) return;
+    if (await tryUnlockMusic()) return;
+
+    await primeMusic();
+  }
+
+  function bindMusicUnlockGestures() {
+    const unlockFromGesture = () => {
+      if (!isMusicAudible()) tryUnlockMusic();
+    };
+    ["pointerdown", "touchstart", "click", "keydown"].forEach((eventName) => {
+      document.addEventListener(eventName, unlockFromGesture, {
+        passive: true,
+        capture: true,
+      });
+    });
   }
 
   function isMusicAudible() {
@@ -192,7 +233,7 @@
         syncMusicToggle();
         return;
       }
-      await unlockMusic();
+      await tryUnlockMusic();
       syncMusicToggle();
     });
   }
@@ -295,7 +336,7 @@
 
   async function openEnvelope() {
     if (opened) return;
-    unlockMusic();
+    await tryUnlockMusic();
     opened = true;
     envelope.disabled = true;
 
@@ -321,16 +362,8 @@
     }
   });
 
-  /* Musica: preload muto al load, volume al primo gesto (tap sulla busta o pagina) */
-  primeMusic();
-  const onFirstGesture = () => unlockMusic();
-  ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
-    document.addEventListener(eventName, onFirstGesture, {
-      once: true,
-      passive: true,
-      capture: true,
-    });
-  });
+  initMusic();
+  bindMusicUnlockGestures();
 
   /* ——— Preview modes ——— */
   if (previewSection) {
