@@ -77,23 +77,11 @@
 
   function prefetchInvitationAssets() {
     hydrateDeferredSources(document.querySelector(".envelope__frame--open") || document);
-    const urls = [
-      "images/envelope-open.webp?v=29",
-      "images/sposi.webp?v=29",
-      "images/chiesa.webp?v=29",
-      "images/tenuta.webp?v=29",
-    ];
-    urls.forEach((url) => {
-      const img = new Image();
-      img.decoding = "async";
-      img.src = url;
-    });
+    if (invitation) hydrateDeferredSources(invitation);
   }
 
   if (anim === "3d-cinema") {
     hydrateDeferredSources(stage || document);
-  } else {
-    window.setTimeout(prefetchInvitationAssets, isTouch ? 700 : 350);
   }
 
   /* ——— Debug switcher (?debug=1) ——— */
@@ -160,6 +148,15 @@
     window.setInterval(updateCountdown, 1000);
   }
 
+  function ensureAudioSrc() {
+    if (!bgMusic) return false;
+    if (bgMusic.getAttribute("src")) return true;
+    const src = bgMusic.getAttribute("data-src");
+    if (!src) return false;
+    bgMusic.src = src;
+    return true;
+  }
+
   function fadeInVolume() {
     if (!bgMusic) return;
     const start = performance.now();
@@ -186,6 +183,7 @@
   async function tryUnlockMusic() {
     if (!bgMusic || reducedMotion || musicPausedByUser) return false;
     if (isMusicAudible()) return true;
+    if (!ensureAudioSrc()) return false;
 
     try {
       bgMusic.muted = false;
@@ -210,40 +208,17 @@
     }
   }
 
-  async function primeMusic() {
-    if (!bgMusic || musicStarted) return;
-
-    try {
-      bgMusic.muted = true;
-      bgMusic.volume = 0;
-      await bgMusic.play();
-      musicStarted = true;
-      if (musicToggle) musicToggle.hidden = false;
-      syncMusicToggle();
-    } catch {
-      musicStarted = false;
-    }
-  }
-
-  async function initMusic() {
+  function initMusic() {
     if (!bgMusic) return;
     if (musicToggle) musicToggle.hidden = false;
-
-    if (reducedMotion) {
-      syncMusicToggle();
-      return;
-    }
-
-    const returning = localStorage.getItem(MUSIC_PREF_KEY) === "1";
-    if (returning && (await tryUnlockMusic())) return;
-    if (await tryUnlockMusic()) return;
-
-    await primeMusic();
+    syncMusicToggle();
   }
 
   function bindMusicUnlockGestures() {
     const unlockFromGesture = () => {
       if (musicPausedByUser || isMusicAudible()) return;
+      // Only start audio after a real user gesture (avoids early 2.5MB download).
+      if (localStorage.getItem(MUSIC_PREF_KEY) === "0") return;
       tryUnlockMusic();
     };
     ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
@@ -265,10 +240,6 @@
     musicToggle.classList.toggle("is-playing", playing);
     musicToggle.classList.toggle("is-paused", !playing);
     musicToggle.setAttribute("aria-pressed", playing ? "true" : "false");
-    musicToggle.setAttribute(
-      "aria-label",
-      playing ? "Metti in pausa la musica" : "Attiva la musica"
-    );
     if (musicToggleLabel) {
       musicToggleLabel.textContent = playing ? "In riproduzione" : "In pausa";
     }

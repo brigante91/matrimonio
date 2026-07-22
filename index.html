@@ -11,7 +11,15 @@
   <link rel="icon" href="favicon-32.png?v=8" type="image/png" sizes="32x32" />
   <link rel="icon" href="favicon.png?v=8" type="image/png" sizes="48x48" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=8" sizes="180x180" />
-  <link rel="preload" as="image" href="images/envelope-closed.webp?v=29" type="image/webp" />
+  <link
+    rel="preload"
+    as="image"
+    type="image/webp"
+    href="images/envelope-closed-720.webp?v=31"
+    imagesrcset="images/envelope-closed-480.webp?v=31 480w, images/envelope-closed-720.webp?v=31 720w, images/envelope-closed-960.webp?v=31 960w"
+    imagesizes="100vw"
+    fetchpriority="high"
+  />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -23,7 +31,7 @@
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
   </noscript>
-  <link rel="stylesheet" href="styles.css?v=29" />
+  <link rel="stylesheet" href="styles.css?v=31" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -36,19 +44,27 @@
 
     <button type="button" class="envelope" id="envelope" aria-label="Apri la busta d'invito">
       <span class="envelope__stage" id="envelopeStage">
-        <img class="envelope__part envelope__interior" data-src="images/envelope-open.webp?v=29" alt="" draggable="false" />
+        <img class="envelope__part envelope__interior" data-src="images/envelope-open-720.webp?v=31" alt="" draggable="false" />
         <div class="envelope__letter" aria-hidden="true">
           <span class="envelope__letter-monogram">G &amp; M</span>
         </div>
-        <img class="envelope__part envelope__body" data-src="images/envelope-closed.webp?v=29" alt="" draggable="false" />
-        <img class="envelope__part envelope__flap" data-src="images/envelope-closed.webp?v=29" alt="" draggable="false" />
+        <img class="envelope__part envelope__body" data-src="images/envelope-closed-720.webp?v=31" alt="" draggable="false" />
+        <img class="envelope__part envelope__flap" data-src="images/envelope-closed-720.webp?v=31" alt="" draggable="false" />
         <picture class="envelope__frame envelope__frame--open">
-          <source data-srcset="images/envelope-open.webp?v=29" type="image/webp" />
-          <img class="envelope__open" data-src="images/envelope-open.png?v=29" alt="" draggable="false" decoding="async" />
+          <source
+            data-srcset="images/envelope-open-480.webp?v=31 480w, images/envelope-open-720.webp?v=31 720w"
+            sizes="100vw"
+            type="image/webp"
+          />
+          <img class="envelope__open" data-src="images/envelope-open.png?v=31" alt="" width="682" height="1024" draggable="false" decoding="async" />
         </picture>
         <picture class="envelope__frame envelope__frame--closed">
-          <source srcset="images/envelope-closed.webp?v=29" type="image/webp" />
-          <img class="envelope__closed" src="images/envelope-closed.png?v=29" alt="" width="960" height="1440" draggable="false" fetchpriority="high" decoding="async" />
+          <source
+            type="image/webp"
+            srcset="images/envelope-closed-480.webp?v=31 480w, images/envelope-closed-720.webp?v=31 720w, images/envelope-closed-960.webp?v=31 960w"
+            sizes="100vw"
+          />
+          <img class="envelope__closed" src="images/envelope-closed.png?v=31" alt="" width="960" height="1440" draggable="false" fetchpriority="high" decoding="async" />
         </picture>
         <div class="envelope__seal" aria-hidden="true">
           <svg class="envelope__seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,11 +140,10 @@
         <div class="portrait-frame__ring">
           <img
             class="portrait-frame__image"
-            src="images/sposi.webp?v=29"
+            data-src="images/sposi.webp?v=31"
             alt="Illustrazione di Gianluca e Michela"
             width="900"
             height="964"
-            loading="lazy"
             decoding="async"
           />
         </div>
@@ -167,11 +182,10 @@
           <p class="detail__place">Piazza San Rocco · Siano (SA)</p>
           <figure class="detail__illustration">
             <img
-              src="images/chiesa.webp?v=29"
+              data-src="images/chiesa.webp?v=31"
               alt="Illustrazione della Chiesa di San Rocco a Siano"
               width="1000"
               height="1000"
-              loading="lazy"
               decoding="async"
             />
           </figure>
@@ -199,11 +213,10 @@
           <p class="detail__place">Via Roma, 19 · Calvanico</p>
           <figure class="detail__illustration">
             <img
-              src="images/tenuta.webp?v=29"
+              data-src="images/tenuta.webp?v=31"
               alt="Illustrazione di Tenuta Leone a Calvanico"
               width="1100"
               height="734"
-              loading="lazy"
               decoding="async"
             />
           </figure>
@@ -302,8 +315,8 @@
     </footer>
   </main>
 
-  <audio id="bgMusic" src="audio/background-lite.mp3" loop preload="none" playsinline></audio>
-  <button type="button" class="music-toggle is-paused" id="musicToggle" aria-label="Attiva la musica" aria-pressed="false">
+  <audio id="bgMusic" data-src="audio/background-lite.mp3" loop preload="none" playsinline></audio>
+  <button type="button" class="music-toggle is-paused" id="musicToggle" aria-pressed="false">
     <span class="music-toggle__disc" aria-hidden="true">
       <span class="music-toggle__bars">
         <span class="music-toggle__bar"></span>
@@ -316,6 +329,6 @@
     <span class="music-toggle__label" id="musicToggleLabel">In pausa</span>
   </button>
 
-  <script src="script.js?v=30"></script>
+  <script src="script.js?v=31"></script>
 </body>
 </html>
