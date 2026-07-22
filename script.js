@@ -33,6 +33,8 @@
 
   let opened = false;
   let musicStarted = false;
+  let musicUnlocked = false;
+  let musicFadeFrame = null;
   let petalInterval = null;
   const MUSIC_VOLUME = 0.22;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
@@ -104,31 +106,62 @@
     window.setInterval(updateCountdown, 1000);
   }
 
-  function fadeInMusic() {
-    if (!bgMusic || musicStarted) return;
-    musicStarted = true;
-    bgMusic.volume = 0;
-    const playPromise = bgMusic.play();
-    if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {
-        musicStarted = false;
-      });
-    }
-    musicToggle.hidden = false;
-    updateMusicToggle();
-
+  function fadeInVolume() {
+    if (!bgMusic) return;
     const start = performance.now();
     const duration = 1800;
+
     const step = (now) => {
+      if (!bgMusic || bgMusic.paused) return;
       const t = Math.min(1, (now - start) / duration);
       bgMusic.volume = MUSIC_VOLUME * t;
-      if (t < 1 && !bgMusic.paused) requestAnimationFrame(step);
-      else if (!bgMusic.paused) bgMusic.volume = MUSIC_VOLUME;
+      if (t < 1) musicFadeFrame = requestAnimationFrame(step);
+      else bgMusic.volume = MUSIC_VOLUME;
     };
-    requestAnimationFrame(step);
+
+    if (musicFadeFrame) cancelAnimationFrame(musicFadeFrame);
+    musicFadeFrame = requestAnimationFrame(step);
+  }
+
+  async function unlockMusic() {
+    if (!bgMusic || musicUnlocked) return;
+
+    try {
+      bgMusic.muted = false;
+      if (bgMusic.paused) {
+        bgMusic.volume = 0;
+        await bgMusic.play();
+      }
+      musicUnlocked = true;
+      musicStarted = true;
+      if (musicToggle) musicToggle.hidden = false;
+      updateMusicToggle();
+      fadeInVolume();
+    } catch {
+      musicUnlocked = false;
+      musicStarted = false;
+    }
+  }
+
+  async function primeMusic() {
+    if (!bgMusic || musicStarted) return;
+
+    try {
+      bgMusic.muted = true;
+      bgMusic.volume = 0;
+      await bgMusic.play();
+      musicStarted = true;
+    } catch {
+      musicStarted = false;
+    }
+  }
+
+  function fadeInMusic() {
+    unlockMusic();
   }
 
   function updateMusicToggle() {
+    if (!bgMusic || !musicToggle) return;
     const muted = bgMusic.paused || bgMusic.muted || bgMusic.volume === 0;
     musicToggle.classList.toggle("is-muted", muted);
     musicToggle.setAttribute("aria-pressed", muted ? "false" : "true");
@@ -139,12 +172,9 @@
   }
 
   musicToggle.addEventListener("click", () => {
-    if (bgMusic.paused) {
-      bgMusic.muted = false;
-      bgMusic.volume = MUSIC_VOLUME;
-      bgMusic.play().catch(() => {});
-      musicStarted = true;
-      musicToggle.hidden = false;
+    if (!bgMusic) return;
+    if (bgMusic.paused || bgMusic.muted) {
+      unlockMusic();
     } else {
       bgMusic.pause();
     }
@@ -282,6 +312,7 @@
 
   async function openEnvelope() {
     if (opened) return;
+    unlockMusic();
     opened = true;
     envelope.disabled = true;
 
@@ -307,15 +338,14 @@
     }
   });
 
-  /* Musica: parte al caricamento; se il browser blocca l'autoplay, al primo tap */
-  fadeInMusic();
-  document.addEventListener(
-    "pointerdown",
-    () => {
-      if (!musicStarted) fadeInMusic();
-    },
-    { once: true, passive: true }
-  );
+  /* Musica: preload muto al load, volume al primo gesto (tap sulla busta o pagina) */
+  primeMusic();
+  ["pointerdown", "touchstart", "keydown"].forEach((eventName) => {
+    document.addEventListener(eventName, () => unlockMusic(), {
+      passive: true,
+      capture: true,
+    });
+  });
 
   /* Romantic idle petal snowfall */
   if (anim === "romantic" && !previewSection && !reducedMotion) {
