@@ -260,19 +260,28 @@
           <input type="number" id="guestCount" name="guests" min="1" max="8" value="1" />
         </div>
 
-        <div class="field">
-          <label for="guestMenu">Preferenza menù</label>
-          <select id="guestMenu" name="menu">
-            <option value="standard">Menù standard</option>
-            <option value="vegetariano">Vegetariano</option>
-            <option value="vegano">Vegano</option>
-            <option value="celiachia">Senza glutine</option>
-          </select>
+        <fieldset class="field field--choice">
+          <legend>Hai allergie?</legend>
+          <div class="choice-row">
+            <label class="choice">
+              <input type="radio" name="allergies" value="si" required />
+              <span>Sì</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="allergies" value="no" checked />
+              <span>No</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="field" id="allergiesField" hidden>
+          <label for="allergyDetails">Quali allergie?</label>
+          <textarea id="allergyDetails" name="allergyDetails" rows="3" placeholder="Scrivi qui le tue allergie o intolleranze…" disabled></textarea>
         </div>
 
         <div class="field">
           <label for="guestMessage">Messaggio per gli sposi</label>
-          <textarea id="guestMessage" name="message" rows="4" placeholder="Un pensiero, un'allergia alimentare, una canzone che non può mancare…"></textarea>
+          <textarea id="guestMessage" name="message" rows="4" placeholder="Un pensiero, una canzone che non può mancare…"></textarea>
         </div>
 
         <button type="submit" class="btn" id="rsvpSubmit">Invia partecipazione</button>
@@ -311,6 +320,6 @@
     <span class="music-toggle__label" id="musicToggleLabel">In pausa</span>
   </button>
 
-  <script src="script.js?v=34"></script>
+  <script src="script.js?v=33"></script>
 </body>
 </html>

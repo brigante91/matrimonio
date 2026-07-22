@@ -34,7 +34,9 @@
   const success = document.getElementById("rsvpSuccess");
   const successText = document.getElementById("rsvpSuccessText");
   const guestsField = document.getElementById("guestsField");
+  const allergiesField = document.getElementById("allergiesField");
   const attendanceInputs = form.querySelectorAll('input[name="attendance"]');
+  const allergyInputs = form.querySelectorAll('input[name="allergies"]');
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
   const musicToggleLabel = document.getElementById("musicToggleLabel");
@@ -484,10 +486,23 @@
     guestsField.querySelector("input").disabled = !attending;
   }
 
+  function toggleAllergiesField() {
+    const hasAllergies = form.querySelector('input[name="allergies"]:checked')?.value === "si";
+    const details = allergiesField.querySelector("textarea");
+    allergiesField.hidden = !hasAllergies;
+    details.disabled = !hasAllergies;
+    details.required = hasAllergies;
+    if (!hasAllergies) details.value = "";
+  }
+
   attendanceInputs.forEach((input) => {
     input.addEventListener("change", toggleGuestsField);
   });
+  allergyInputs.forEach((input) => {
+    input.addEventListener("change", toggleAllergiesField);
+  });
   toggleGuestsField();
+  toggleAllergiesField();
 
   function showError(message) {
     errorEl.hidden = false;
@@ -539,13 +554,15 @@
     const data = new FormData(form);
     const name = String(data.get("name") || "").trim();
     const attending = data.get("attendance") === "si";
+    const hasAllergies = data.get("allergies") === "si";
     const guests = attending ? String(data.get("guests") || "1") : "";
     const payload = {
       name,
       phone: String(data.get("phone") || "").trim(),
       attendance: attending ? "si" : "no",
       guests,
-      menu: String(data.get("menu") || ""),
+      allergies: hasAllergies ? "si" : "no",
+      allergyDetails: hasAllergies ? String(data.get("allergyDetails") || "").trim() : "",
       message: String(data.get("message") || "").trim(),
     };
 

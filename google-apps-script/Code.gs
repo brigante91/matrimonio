@@ -25,7 +25,9 @@ function doPost(e) {
       data.phone || data.email || "",
       data.attendance || "",
       data.guests || "",
-      data.menu || "",
+      data.allergies === "si"
+        ? ("Sì" + (data.allergyDetails ? ": " + data.allergyDetails : ""))
+        : (data.allergies === "no" ? "No" : (data.menu || "")),
       data.message || "",
     ]);
 
@@ -51,7 +53,7 @@ function getOrCreateSheet_() {
       "Telefono",
       "Partecipa",
       "Ospiti",
-      "Menu",
+      "Allergie",
       "Messaggio",
     ]);
     sheet.setFrozenRows(1);
