@@ -46,10 +46,10 @@
   let musicUnlocked = false;
   let musicFadeFrame = null;
   let musicPausedByUser = false;
-  const MUSIC_VOLUME = 0.10;
-  const MUSIC_PREF_KEY = "wedding-music-on";
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const MUSIC_VOLUME = isTouch ? 0.035 : 0.07;
+  const MUSIC_PREF_KEY = "wedding-music-on";
 
   document.body.classList.add(`anim-${anim}`);
 
