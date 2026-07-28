@@ -753,13 +753,6 @@ body.has-opened .hero .ornament {
   margin-top: 2.5rem;
 }
 
-@media (min-width: 720px) {
-  .detail-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-  }
-}
-
 .detail {
   text-align: center;
 }
