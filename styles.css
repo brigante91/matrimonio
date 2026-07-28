@@ -669,13 +669,13 @@ body.anim-3d-cinema .envelope-gate__florals--br {
   }
 }
 
-/* Cera lacca dorata + monogramma Italianno */
+/* Cera lacca dorata + monogramma Italianno impresso */
 body.anim-3d-cinema .envelope-gate__seal {
   position: absolute;
   left: 50%;
   top: 48%;
-  width: clamp(104px, 24vw, 152px);
-  height: clamp(104px, 24vw, 152px);
+  width: clamp(112px, 26vw, 164px);
+  height: clamp(112px, 26vw, 164px);
   transform: translate(-50%, -50%);
   z-index: 14;
   pointer-events: none;
@@ -691,7 +691,7 @@ body.anim-3d-cinema .envelope-gate__seal-wax {
   height: 100%;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 5px 12px rgba(58, 52, 44, 0.28));
+  filter: drop-shadow(0 6px 10px rgba(58, 52, 44, 0.32));
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
@@ -700,19 +700,20 @@ body.anim-3d-cinema .envelope-gate__seal-wax {
 body.anim-3d-cinema .envelope-gate__seal-monogram {
   position: absolute;
   left: 50%;
-  top: 49%;
+  top: 50%;
   z-index: 1;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -54%);
   font-family: var(--font-display);
-  font-size: clamp(2rem, 6.8vw, 3rem);
+  font-size: clamp(1.9rem, 6.4vw, 2.85rem);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.01em;
-  color: rgba(255, 248, 230, 0.94);
+  letter-spacing: 0.03em;
+  color: #4a3510;
+  mix-blend-mode: multiply;
+  opacity: 0.78;
   text-shadow:
-    0 1px 0 rgba(70, 45, 8, 0.45),
-    0 -1px 0 rgba(255, 250, 220, 0.22),
-    0 0 1px rgba(90, 60, 10, 0.35);
+    0 1px 0 rgba(255, 230, 170, 0.28),
+    0 -1px 1px rgba(30, 18, 4, 0.4);
   user-select: none;
   pointer-events: none;
 }
