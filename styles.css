@@ -50,10 +50,11 @@
   --anim-fader-in: 900ms;
   --anim-fader-out: 1200ms;
   --anim-settle: 280ms;
-  --anim-gate-open: 1400ms;
+  --anim-gate-open: 2800ms;
+  --anim-gate-clear: 450ms;
   --anim-tilt-max: 6deg;
   --ease-dissolve: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-gate: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-gate: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 /* Faster sequence on touch / narrow phones (connectivity + perceived speed) */
@@ -68,7 +69,8 @@
     --anim-fader-out: 720ms;
     --anim-settle: 160ms;
     --anim-romantic-flap: 620ms;
-    --anim-gate-open: 1000ms;
+    --anim-gate-open: 2200ms;
+    --anim-gate-clear: 350ms;
   }
 }
 
@@ -525,7 +527,7 @@ body.anim-cinematic .invitation.is-revealed-zoom {
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* ——— Variant: 3D Gate (fullscreen center-split doors) ——— */
+/* ——— Variant: 3D Gatefold (fullscreen peaked doors + ribbon) ——— */
 .envelope-gate {
   display: none;
 }
@@ -537,6 +539,10 @@ body.anim-3d-cinema .envelope__frame {
   display: none !important;
 }
 
+body.anim-3d-cinema .envelope:not(:disabled) .envelope__stage {
+  animation: none;
+}
+
 body.anim-3d-cinema .envelope-gate {
   display: block;
   position: absolute;
@@ -544,8 +550,8 @@ body.anim-3d-cinema .envelope-gate {
   width: 100%;
   height: 100%;
   z-index: 10;
-  perspective: min(160vw, 1800px);
-  perspective-origin: 50% 48%;
+  perspective: min(180vw, 2200px);
+  perspective-origin: 50% 50%;
   transform-style: preserve-3d;
   overflow: hidden;
   pointer-events: none;
@@ -561,8 +567,8 @@ body.anim-3d-cinema .envelope-scene {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: var(--paper);
-  transition: background 0.45s var(--ease-dissolve);
+  background: #f3ebe0;
+  transition: background 0.6s var(--ease-dissolve);
 }
 
 body.anim-3d-cinema .envelope-gate__panel {
@@ -595,20 +601,16 @@ body.anim-3d-cinema .envelope-gate__face {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--paper);
+  background: #f3ebe0;
   transform: translateZ(0);
 }
 
 body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face {
-  box-shadow:
-    inset -1px 0 0 rgba(58, 52, 44, 0.12),
-    4px 0 28px rgba(58, 52, 44, 0.06);
+  box-shadow: inset -1px 0 0 rgba(58, 52, 44, 0.12);
 }
 
 body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face {
-  box-shadow:
-    inset 1px 0 0 rgba(58, 52, 44, 0.12),
-    -4px 0 28px rgba(58, 52, 44, 0.06);
+  box-shadow: inset 1px 0 0 rgba(58, 52, 44, 0.12);
 }
 
 body.anim-3d-cinema .envelope-gate__face::after {
@@ -617,49 +619,116 @@ body.anim-3d-cinema .envelope-gate__face::after {
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity calc(var(--anim-gate-open) * 0.55) var(--ease-gate);
+  transition: opacity calc(var(--anim-gate-open) * 0.5) var(--ease-gate);
   z-index: 2;
 }
 
 body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face::after {
-  background: linear-gradient(
-    90deg,
-    transparent 55%,
-    rgba(58, 52, 44, 0.18) 100%
-  );
+  background: linear-gradient(90deg, transparent 45%, rgba(58, 52, 44, 0.14) 100%);
 }
 
 body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face::after {
-  background: linear-gradient(
-    270deg,
-    transparent 55%,
-    rgba(58, 52, 44, 0.18) 100%
-  );
+  background: linear-gradient(270deg, transparent 45%, rgba(58, 52, 44, 0.14) 100%);
 }
 
-body.anim-3d-cinema .envelope-gate__img {
+body.anim-3d-cinema .envelope-atmosphere {
+  display: none;
+}
+
+body.anim-3d-cinema .envelope-gate__florals {
   position: absolute;
-  top: 0;
-  width: 100vw;
-  height: 100%;
-  max-width: none;
-  object-fit: contain;
-  object-position: center;
-  background: var(--paper);
+  display: block;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+  z-index: 1;
+  width: min(58vmin, 380px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  object-position: center;
+  max-width: none;
+  filter: drop-shadow(0 4px 12px rgba(90, 78, 62, 0.1));
 }
 
-body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__img {
-  left: 0;
+body.anim-3d-cinema .envelope-gate__florals--tl {
+  top: max(-2%, env(safe-area-inset-top, 0px) * -1);
+  left: max(-4%, -18px);
+  transform-origin: top left;
 }
 
-body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__img {
-  left: -100%;
+body.anim-3d-cinema .envelope-gate__florals--br {
+  right: max(-4%, -18px);
+  bottom: max(-2%, env(safe-area-inset-bottom, 0px) * -1);
+  transform-origin: bottom right;
 }
 
-/* Opening: doors swing outward from the center seam */
+@media (max-width: 820px) {
+  body.anim-3d-cinema .envelope-gate__florals {
+    width: min(62vw, 280px);
+  }
+}
+
+/* Gold seal with site display font (Italianno) */
+body.anim-3d-cinema .envelope-gate__seal {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: clamp(96px, 22vw, 140px);
+  height: clamp(96px, 22vw, 140px);
+  transform: translate(-50%, -50%);
+  z-index: 14;
+  pointer-events: none;
+  transition:
+    opacity calc(var(--anim-gate-open) * 0.28) ease-out,
+    transform calc(var(--anim-gate-open) * 0.28) ease-out;
+}
+
+body.anim-3d-cinema .envelope-gate__seal-disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
+  background:
+    radial-gradient(circle at 32% 28%, #f0d78a 0%, #d4af37 42%, #b8922a 72%, #8f6f1c 100%);
+  box-shadow:
+    inset 0 2px 4px rgba(255, 250, 230, 0.45),
+    inset 0 -3px 8px rgba(90, 60, 10, 0.28),
+    0 4px 14px rgba(58, 52, 44, 0.22);
+}
+
+body.anim-3d-cinema .envelope-gate__seal-ring {
+  position: absolute;
+  inset: 11%;
+  border-radius: inherit;
+  border: 1.5px solid rgba(255, 248, 220, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(120, 90, 20, 0.22);
+  pointer-events: none;
+}
+
+body.anim-3d-cinema .envelope-gate__seal-monogram {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 7.2vw, 3.15rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #fff8e8;
+  text-shadow:
+    0 1px 0 rgba(90, 60, 10, 0.35),
+    0 -1px 0 rgba(255, 250, 230, 0.25);
+  user-select: none;
+}
+
+body.anim-3d-cinema .envelope-hint {
+  color: var(--ink-soft);
+  opacity: 0.72;
+}
+
+/* Opening: doors swing outward; site peeks through blurred */
 body.anim-3d-cinema .envelope-scene.is-gate-opening,
 body.anim-3d-cinema .envelope-scene.is-gate-open {
   background: transparent;
@@ -671,12 +740,20 @@ body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-atmosphere {
   opacity: 0;
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--left {
-  transform: translateZ(0.1px) rotateY(-105deg);
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__seal,
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__seal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.92);
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--right {
-  transform: translateZ(0.1px) rotateY(105deg);
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--left,
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--left {
+  transform: translateZ(0.1px) rotateY(-108deg);
+}
+
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--right,
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--right {
+  transform: translateZ(0.1px) rotateY(108deg);
 }
 
 body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__face::after,
@@ -684,25 +761,33 @@ body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__face::after {
   opacity: 1;
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--left {
-  transform: translateZ(0.1px) rotateY(-105deg);
-}
-
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--right {
-  transform: translateZ(0.1px) rotateY(105deg);
-}
-
 body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate,
 body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate {
   pointer-events: none;
 }
 
-body.anim-3d-cinema .invitation.is-revealed {
-  transition-duration: calc(var(--anim-gate-open) * 0.65);
+/* Soft blur only — no scale so the reveal stays flat (no bounce) */
+body.anim-3d-cinema .invitation.is-revealed.is-gate-blurred {
+  filter: blur(5px);
+  transform: none;
+  transition:
+    opacity calc(var(--anim-gate-open) * 0.35) ease-out,
+    filter var(--anim-gate-clear) ease-out;
+}
+
+body.anim-3d-cinema .invitation.is-revealed.is-gate-clear {
+  filter: blur(0);
+  transform: none;
+  transition:
+    opacity var(--anim-gate-clear) ease-out,
+    filter var(--anim-gate-clear) ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.anim-3d-cinema .envelope-gate__panel {
+  body.anim-3d-cinema .envelope-gate__panel,
+  body.anim-3d-cinema .envelope-gate__seal,
+  body.anim-3d-cinema .invitation.is-revealed.is-gate-blurred,
+  body.anim-3d-cinema .invitation.is-revealed.is-gate-clear {
     transition: none;
   }
 }

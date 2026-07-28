@@ -51,7 +51,7 @@
   let musicPausedByUser = false;
   const WEDDING_AT = new Date("2027-07-14T12:00:00+02:00").getTime();
   const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  const MUSIC_VOLUME = Math.min(1, Math.max(0, isTouch ? 0.035 : 0.07));
+  const MUSIC_VOLUME = Math.min(1, Math.max(0, isTouch ? 0.14 : 0.24));
   const MUSIC_PREF_KEY = "wedding-music-on";
 
   function clampVolume(value) {
@@ -396,18 +396,25 @@
     scene.classList.add("is-settling");
     await wait(parseMs("--anim-settle"));
 
-    // Invitation sits behind the gate so it appears as the doors open
+    // Invitation sits behind the gate; brief blur then clear while doors are still opening
     invitation.hidden = false;
     void invitation.offsetWidth;
     prefetchInvitationAssets();
-    invitation.classList.add("is-revealed");
+    invitation.classList.add("is-revealed", "is-gate-blurred");
     document.body.classList.add("is-revealing-site");
 
+    const gateOpenMs = parseMs("--anim-gate-open");
+    const clearAt = Math.round(gateOpenMs * 0.35);
+
     scene.classList.add("is-gate-opening");
-    await wait(parseMs("--anim-gate-open"));
+    await wait(clearAt);
+
+    invitation.classList.remove("is-gate-blurred");
+    invitation.classList.add("is-gate-clear");
+    await wait(gateOpenMs - clearAt);
 
     scene.classList.add("is-gate-open");
-    await wait(100);
+    await wait(80);
     finishOpen();
   }
 
