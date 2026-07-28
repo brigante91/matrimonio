@@ -669,13 +669,13 @@ body.anim-3d-cinema .envelope-gate__florals--br {
   }
 }
 
-/* Gold seal with site display font (Italianno) */
+/* Cera lacca dorata + monogramma Italianno */
 body.anim-3d-cinema .envelope-gate__seal {
   position: absolute;
   left: 50%;
   top: 48%;
-  width: clamp(96px, 22vw, 140px);
-  height: clamp(96px, 22vw, 140px);
+  width: clamp(104px, 24vw, 152px);
+  height: clamp(104px, 24vw, 152px);
   transform: translate(-50%, -50%);
   z-index: 14;
   pointer-events: none;
@@ -684,43 +684,37 @@ body.anim-3d-cinema .envelope-gate__seal {
     transform calc(var(--anim-gate-open) * 0.28) ease-out;
 }
 
-body.anim-3d-cinema .envelope-gate__seal-disc {
-  position: relative;
-  display: grid;
-  place-items: center;
+body.anim-3d-cinema .envelope-gate__seal-wax {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  border-radius: 48% 52% 50% 50% / 50% 48% 52% 50%;
-  background:
-    radial-gradient(circle at 32% 28%, #f0d78a 0%, #d4af37 42%, #b8922a 72%, #8f6f1c 100%);
-  box-shadow:
-    inset 0 2px 4px rgba(255, 250, 230, 0.45),
-    inset 0 -3px 8px rgba(90, 60, 10, 0.28),
-    0 4px 14px rgba(58, 52, 44, 0.22);
-}
-
-body.anim-3d-cinema .envelope-gate__seal-ring {
-  position: absolute;
-  inset: 11%;
-  border-radius: inherit;
-  border: 1.5px solid rgba(255, 248, 220, 0.38);
-  box-shadow: inset 0 0 0 1px rgba(120, 90, 20, 0.22);
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 5px 12px rgba(58, 52, 44, 0.28));
+  user-select: none;
+  -webkit-user-drag: none;
   pointer-events: none;
 }
 
 body.anim-3d-cinema .envelope-gate__seal-monogram {
-  position: relative;
+  position: absolute;
+  left: 50%;
+  top: 49%;
   z-index: 1;
+  transform: translate(-50%, -50%);
   font-family: var(--font-display);
-  font-size: clamp(2.1rem, 7.2vw, 3.15rem);
+  font-size: clamp(2rem, 6.8vw, 3rem);
   font-weight: 400;
   line-height: 1;
-  letter-spacing: 0.02em;
-  color: #fff8e8;
+  letter-spacing: 0.01em;
+  color: rgba(255, 248, 230, 0.94);
   text-shadow:
-    0 1px 0 rgba(90, 60, 10, 0.35),
-    0 -1px 0 rgba(255, 250, 230, 0.25);
+    0 1px 0 rgba(70, 45, 8, 0.45),
+    0 -1px 0 rgba(255, 250, 220, 0.22),
+    0 0 1px rgba(90, 60, 10, 0.35);
   user-select: none;
+  pointer-events: none;
 }
 
 body.anim-3d-cinema .envelope-hint {
