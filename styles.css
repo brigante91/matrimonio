@@ -50,8 +50,10 @@
   --anim-fader-in: 900ms;
   --anim-fader-out: 1200ms;
   --anim-settle: 280ms;
+  --anim-gate-open: 1400ms;
   --anim-tilt-max: 6deg;
   --ease-dissolve: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-gate: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Faster sequence on touch / narrow phones (connectivity + perceived speed) */
@@ -66,6 +68,7 @@
     --anim-fader-out: 720ms;
     --anim-settle: 160ms;
     --anim-romantic-flap: 620ms;
+    --anim-gate-open: 1000ms;
   }
 }
 
@@ -246,7 +249,7 @@ textarea {
 }
 
 body.anim-3d-cinema .envelope__part {
-  display: block;
+  display: none;
 }
 
 body.anim-3d-cinema .envelope__open,
@@ -314,6 +317,7 @@ body.anim-3d-cinema .envelope__closed {
 
 .envelope-scene.is-settling .envelope__stage,
 .envelope-scene.is-flap-opening .envelope__stage,
+.envelope-scene.is-gate-opening .envelope__stage,
 .envelope-scene.is-dissolving .envelope__stage {
   animation: none;
 }
@@ -521,56 +525,186 @@ body.anim-cinematic .invitation.is-revealed-zoom {
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* ——— Variant: 3D Cinema (layered envelope + physical flap) ——— */
-body.anim-3d-cinema .envelope__seal { opacity: 0; visibility: hidden; }
-
-body.anim-3d-cinema .envelope-scene.is-seal-breaking .envelope__flap {
-  animation: sealFlapWiggle var(--anim-seal-break) var(--ease-out);
+/* ——— Variant: 3D Gate (fullscreen center-split doors) ——— */
+.envelope-gate {
+  display: none;
 }
 
-@keyframes sealFlapWiggle {
-  0%, 100% { transform: rotateX(0deg); }
-  35% { transform: rotateX(-4deg); }
-  70% { transform: rotateX(2deg); }
+body.anim-3d-cinema .envelope__seal,
+body.anim-3d-cinema .envelope__letter,
+body.anim-3d-cinema .envelope__part,
+body.anim-3d-cinema .envelope__frame {
+  display: none !important;
 }
 
-body.anim-3d-cinema .envelope__letter {
-  opacity: 1;
-  z-index: 2;
-  transform: translate(-50%, 20%) scale(0.88) rotate(-2deg);
+body.anim-3d-cinema .envelope-gate {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  perspective: min(160vw, 1800px);
+  perspective-origin: 50% 48%;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  pointer-events: none;
 }
 
-body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__body {
+body.anim-3d-cinema .envelope__stage {
+  perspective: none;
+  background: transparent;
+}
+
+body.anim-3d-cinema .envelope-scene {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--paper);
+  transition: background 0.45s var(--ease-dissolve);
+}
+
+body.anim-3d-cinema .envelope-gate__panel {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+  transition: transform var(--anim-gate-open) var(--ease-gate);
+}
+
+body.anim-3d-cinema .envelope-gate__panel--left {
+  left: 0;
+  transform-origin: left center;
+  transform: translateZ(0.1px) rotateY(0deg);
+}
+
+body.anim-3d-cinema .envelope-gate__panel--right {
+  right: 0;
+  transform-origin: right center;
+  transform: translateZ(0.1px) rotateY(0deg);
+}
+
+body.anim-3d-cinema .envelope-gate__face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper);
+  transform: translateZ(0);
+}
+
+body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face {
+  box-shadow:
+    inset -1px 0 0 rgba(58, 52, 44, 0.12),
+    4px 0 28px rgba(58, 52, 44, 0.06);
+}
+
+body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face {
+  box-shadow:
+    inset 1px 0 0 rgba(58, 52, 44, 0.12),
+    -4px 0 28px rgba(58, 52, 44, 0.06);
+}
+
+body.anim-3d-cinema .envelope-gate__face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   opacity: 0;
-  transition: opacity calc(var(--anim-flap-open) * 0.35) var(--ease-out);
+  transition: opacity calc(var(--anim-gate-open) * 0.55) var(--ease-gate);
+  z-index: 2;
 }
 
-body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__interior {
+body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face::after {
+  background: linear-gradient(
+    90deg,
+    transparent 55%,
+    rgba(58, 52, 44, 0.18) 100%
+  );
+}
+
+body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face::after {
+  background: linear-gradient(
+    270deg,
+    transparent 55%,
+    rgba(58, 52, 44, 0.18) 100%
+  );
+}
+
+body.anim-3d-cinema .envelope-gate__img {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+  object-position: center;
+  background: var(--paper);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__img {
+  left: 0;
+}
+
+body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__img {
+  left: -100%;
+}
+
+/* Opening: doors swing outward from the center seam */
+body.anim-3d-cinema .envelope-scene.is-gate-opening,
+body.anim-3d-cinema .envelope-scene.is-gate-open {
+  background: transparent;
+  pointer-events: none;
+}
+
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-atmosphere,
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-atmosphere {
+  opacity: 0;
+}
+
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--left {
+  transform: translateZ(0.1px) rotateY(-105deg);
+}
+
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--right {
+  transform: translateZ(0.1px) rotateY(105deg);
+}
+
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__face::after,
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__face::after {
   opacity: 1;
-  transition: opacity calc(var(--anim-flap-open) * 0.45) var(--ease-out);
 }
 
-body.anim-3d-cinema .envelope-scene.is-flap-opening .envelope__flap {
-  transform: rotateX(-165deg);
-  z-index: 1;
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--left {
+  transform: translateZ(0.1px) rotateY(-105deg);
 }
 
-body.anim-3d-cinema .envelope-scene.is-letter-rising .envelope__letter {
-  animation: letterRise3D var(--anim-letter-rise) var(--ease-spring) forwards;
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--right {
+  transform: translateZ(0.1px) rotateY(105deg);
 }
 
-@keyframes letterRise3D {
-  0% { opacity: 1; transform: translate(-50%, 20%) scale(0.88) rotate(-2deg); box-shadow: 0 4px 12px rgba(58, 52, 44, 0.08); }
-  100% { opacity: 1; transform: translate(-50%, -95%) scale(1.05) rotate(0deg); box-shadow: 0 20px 44px rgba(58, 52, 44, 0.18); z-index: 5; }
+body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate,
+body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate {
+  pointer-events: none;
 }
 
-body.anim-3d-cinema .envelope-scene.is-zooming {
-  transform-origin: 50% 48%;
-  animation: sceneZoom var(--anim-scene-zoom) var(--ease-out) forwards;
+body.anim-3d-cinema .invitation.is-revealed {
+  transition-duration: calc(var(--anim-gate-open) * 0.65);
 }
 
-body.anim-3d-cinema .invitation.is-revealed-zoom {
-  animation: invitationZoomIn var(--anim-scene-zoom) var(--ease-out) forwards;
+@media (prefers-reduced-motion: reduce) {
+  body.anim-3d-cinema .envelope-gate__panel {
+    transition: none;
+  }
 }
 
 /* ——— Variant: Romantic (glow + flash + slow) ——— */
@@ -596,7 +730,9 @@ body.anim-romantic .envelope-scene.is-leaving {
 /* ——— Shared opening / leaving states ——— */
 .envelope-scene.is-opening .envelope-hint,
 .envelope-scene.is-seal-breaking .envelope-hint,
-.envelope-scene.is-flap-opening .envelope-hint {
+.envelope-scene.is-flap-opening .envelope-hint,
+.envelope-scene.is-gate-opening .envelope-hint,
+.envelope-scene.is-gate-open .envelope-hint {
   opacity: 0;
   animation: none;
   transform: translateX(-50%) translateY(18px);
@@ -620,7 +756,8 @@ body.anim-romantic .envelope-scene.is-leaving {
 
 .envelope-scene.is-opening .envelope,
 .envelope-scene.is-seal-breaking .envelope,
-.envelope-scene.is-flap-opening .envelope {
+.envelope-scene.is-flap-opening .envelope,
+.envelope-scene.is-gate-opening .envelope {
   cursor: default;
 }
 

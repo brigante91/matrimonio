@@ -31,7 +31,7 @@
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
   </noscript>
-  <link rel="stylesheet" href="styles.css?v=32" />
+  <link rel="stylesheet" href="styles.css?v=36" />
 </head>
 <body>
   <!-- Envelope overlay -->
@@ -76,6 +76,41 @@
           <span class="envelope__sparkle envelope__sparkle--2" aria-hidden="true"></span>
           <span class="envelope__sparkle envelope__sparkle--3" aria-hidden="true"></span>
         </div>
+
+        <!-- 3D gate doors (split closed envelope, open from center) -->
+        <span class="envelope-gate" id="envelopeGate" aria-hidden="true">
+          <span class="envelope-gate__panel envelope-gate__panel--left">
+            <span class="envelope-gate__face">
+              <img
+                class="envelope-gate__img"
+                src="images/envelope-closed.png?v=31"
+                srcset="images/envelope-closed-480.webp?v=31 480w, images/envelope-closed-720.webp?v=31 720w, images/envelope-closed-960.webp?v=31 960w"
+                sizes="100vw"
+                alt=""
+                width="960"
+                height="1440"
+                draggable="false"
+                decoding="async"
+                fetchpriority="high"
+              />
+            </span>
+          </span>
+          <span class="envelope-gate__panel envelope-gate__panel--right">
+            <span class="envelope-gate__face">
+              <img
+                class="envelope-gate__img"
+                src="images/envelope-closed.png?v=31"
+                srcset="images/envelope-closed-480.webp?v=31 480w, images/envelope-closed-720.webp?v=31 720w, images/envelope-closed-960.webp?v=31 960w"
+                sizes="100vw"
+                alt=""
+                width="960"
+                height="1440"
+                draggable="false"
+                decoding="async"
+              />
+            </span>
+          </span>
+        </span>
       </span>
     </button>
   </div>
@@ -88,7 +123,7 @@
     <button type="button" class="anim-debug__btn" data-anim="cinematic">Cinematic</button>
     <button type="button" class="anim-debug__btn" data-anim="light">Light</button>
     <button type="button" class="anim-debug__btn" data-anim="romantic">Romantic</button>
-    <button type="button" class="anim-debug__btn" data-anim="3d-cinema">3D Cinema</button>
+    <button type="button" class="anim-debug__btn" data-anim="3d-cinema">3D Gate</button>
   </nav>
 
   <!-- Invitation content -->
@@ -320,6 +355,6 @@
     <span class="music-toggle__label" id="musicToggleLabel">In pausa</span>
   </button>
 
-  <script src="script.js?v=35"></script>
+  <script src="script.js?v=36"></script>
 </body>
 </html>

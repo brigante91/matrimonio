@@ -17,7 +17,7 @@
 
   const params = new URLSearchParams(window.location.search);
   const animParam = params.get("anim");
-  const anim = ANIM_VARIANTS.includes(animParam) ? animParam : "classic";
+  const anim = ANIM_VARIANTS.includes(animParam) ? animParam : "3d-cinema";
   const debugMode = params.has("debug");
   const previewParam = params.get("preview");
   const previewSection = PREVIEW_SECTIONS.includes(previewParam) ? previewParam : null;
@@ -393,13 +393,22 @@
 
   async function run3DCinema() {
     softStopBreathe();
-    scene.classList.add("is-settling", "is-seal-breaking");
-    await wait(parseMs("--anim-seal-break"));
-    scene.classList.add("is-flap-opening");
-    await wait(parseMs("--anim-flap-open"));
-    scene.classList.add("is-letter-rising");
-    await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
-    await transitionToSite();
+    scene.classList.add("is-settling");
+    await wait(parseMs("--anim-settle"));
+
+    // Invitation sits behind the gate so it appears as the doors open
+    invitation.hidden = false;
+    void invitation.offsetWidth;
+    prefetchInvitationAssets();
+    invitation.classList.add("is-revealed");
+    document.body.classList.add("is-revealing-site");
+
+    scene.classList.add("is-gate-opening");
+    await wait(parseMs("--anim-gate-open"));
+
+    scene.classList.add("is-gate-open");
+    await wait(100);
+    finishOpen();
   }
 
   async function runRomantic() {
