@@ -10,15 +10,9 @@
   <link rel="icon" href="favicon-16.png?v=9" type="image/png" sizes="16x16" />
   <link rel="icon" href="favicon.png?v=9" type="image/png" sizes="48x48" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png?v=9" sizes="180x180" />
-  <link
-    rel="preload"
-    as="image"
-    type="image/webp"
-    href="images/envelope-closed-720.webp?v=32"
-    imagesrcset="images/envelope-closed-480.webp?v=32 480w, images/envelope-closed-720.webp?v=32 720w, images/envelope-closed-960.webp?v=32 960w"
-    imagesizes="100vw"
-    fetchpriority="high"
-  />
+  <link rel="preload" as="image" type="image/webp" href="images/gate-florals-tl.webp?v=60" fetchpriority="high" />
+  <link rel="preload" as="image" type="image/webp" href="images/gate-florals-br.webp?v=60" fetchpriority="high" />
+  <link rel="preload" as="image" type="image/webp" href="images/wax-seal-gold.webp?v=56" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -30,59 +24,21 @@
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Italianno&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
   </noscript>
-  <link rel="stylesheet" href="styles.css?v=59" />
+  <link rel="stylesheet" href="styles.css?v=60" />
 </head>
 <body>
-  <!-- Envelope overlay -->
+  <!-- Gatefold overlay -->
   <div class="envelope-scene" id="envelopeScene" aria-label="Busta d'invito">
-    <div class="envelope-atmosphere" aria-hidden="true"></div>
     <p class="envelope-hint" id="envelopeHint">Tocca per aprire</p>
-
-    <div class="envelope-scene__glow" aria-hidden="true"></div>
-    <div class="envelope-scene__flash" aria-hidden="true"></div>
 
     <button type="button" class="envelope" id="envelope" aria-label="Apri la busta d'invito">
       <span class="envelope__stage" id="envelopeStage">
-        <img class="envelope__part envelope__interior" data-src="images/envelope-open-720.webp?v=32" alt="" draggable="false" />
-        <div class="envelope__letter" aria-hidden="true">
-          <span class="envelope__letter-monogram">G &amp; M</span>
-        </div>
-        <img class="envelope__part envelope__body" data-src="images/envelope-closed-720.webp?v=32" alt="" draggable="false" />
-        <img class="envelope__part envelope__flap" data-src="images/envelope-closed-720.webp?v=32" alt="" draggable="false" />
-        <picture class="envelope__frame envelope__frame--open">
-          <source
-            data-srcset="images/envelope-open-480.webp?v=32 480w, images/envelope-open-720.webp?v=32 720w"
-            sizes="100vw"
-            type="image/webp"
-          />
-          <img class="envelope__open" data-src="images/envelope-open.png?v=32" alt="" width="682" height="1024" draggable="false" decoding="async" />
-        </picture>
-        <picture class="envelope__frame envelope__frame--closed">
-          <source
-            type="image/webp"
-            srcset="images/envelope-closed-480.webp?v=32 480w, images/envelope-closed-720.webp?v=32 720w, images/envelope-closed-960.webp?v=32 960w"
-            sizes="100vw"
-          />
-          <img class="envelope__closed" src="images/envelope-closed.png?v=32" alt="" width="960" height="1440" draggable="false" fetchpriority="high" decoding="async" />
-        </picture>
-        <div class="envelope__seal" aria-hidden="true">
-          <svg class="envelope__seal-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="46" fill="var(--wax)" opacity="0.95"/>
-            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,250,240,0.35)" stroke-width="1.5"/>
-            <text x="50" y="54" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#fffaf0">G&amp;M</text>
-          </svg>
-          <span class="envelope__sparkle envelope__sparkle--1" aria-hidden="true"></span>
-          <span class="envelope__sparkle envelope__sparkle--2" aria-hidden="true"></span>
-          <span class="envelope__sparkle envelope__sparkle--3" aria-hidden="true"></span>
-        </div>
-
-        <!-- 3D gatefold: smooth cream paper, white florals, gold seal -->
         <span class="envelope-gate" id="envelopeGate" aria-hidden="true">
           <span class="envelope-gate__panel envelope-gate__panel--left">
             <span class="envelope-gate__face">
               <img
                 class="envelope-gate__florals envelope-gate__florals--tl"
-                src="images/gate-florals-tl.webp?v=59"
+                src="images/gate-florals-tl.webp?v=60"
                 alt=""
                 width="1000"
                 height="1000"
@@ -95,7 +51,7 @@
             <span class="envelope-gate__face">
               <img
                 class="envelope-gate__florals envelope-gate__florals--br"
-                src="images/gate-florals-br.webp?v=59"
+                src="images/gate-florals-br.webp?v=60"
                 alt=""
                 width="1000"
                 height="1000"
@@ -119,17 +75,6 @@
       </span>
     </button>
   </div>
-
-  <div class="scene-fader" id="sceneFader" aria-hidden="true"></div>
-
-  <nav class="anim-debug" id="animDebug" hidden aria-label="Selettore animazione busta">
-    <span class="anim-debug__label">Anim</span>
-    <button type="button" class="anim-debug__btn" data-anim="classic">Classic</button>
-    <button type="button" class="anim-debug__btn" data-anim="cinematic">Cinematic</button>
-    <button type="button" class="anim-debug__btn" data-anim="light">Light</button>
-    <button type="button" class="anim-debug__btn" data-anim="romantic">Romantic</button>
-    <button type="button" class="anim-debug__btn" data-anim="3d-cinema">3D Gate</button>
-  </nav>
 
   <!-- Invitation content -->
   <main class="invitation" id="invitation" hidden>
@@ -360,6 +305,6 @@
     <span class="music-toggle__label" id="musicToggleLabel">In pausa</span>
   </button>
 
-  <script src="script.js?v=59"></script>
+  <script src="script.js?v=60"></script>
 </body>
 </html>

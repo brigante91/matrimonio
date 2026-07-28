@@ -33,49 +33,22 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
 
-  /* ——— Envelope animation timings (tune here) ——— */
-  --anim-seal-break: 320ms;
-  --anim-flap-open: 900ms;
-  --anim-letter-rise: 560ms;
-  --anim-letter-pause: 120ms;
-  --anim-scene-zoom: 820ms;
-  --anim-scene-leave: 920ms;
-  --anim-invitation-reveal: 1200ms;
-  --anim-classic-crossfade: 1100ms;
-  --anim-classic-leave: 1000ms;
-  --anim-light-leave: 880ms;
-  --anim-romantic-flap: 900ms;
-  --anim-romantic-leave: 1200ms;
-  --anim-romantic-flash: 520ms;
-  --anim-fader-in: 900ms;
-  --anim-fader-out: 1200ms;
+  /* ——— Gatefold timings ——— */
   --anim-settle: 280ms;
   --anim-gate-open: 2800ms;
   --anim-gate-clear: 450ms;
-  --anim-tilt-max: 6deg;
+  --anim-invitation-reveal: 1200ms;
   --ease-dissolve: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-gate: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Faster sequence on touch / narrow phones (connectivity + perceived speed) */
+/* Faster sequence on touch / narrow phones */
 @media (hover: none), (max-width: 820px) {
   :root {
-    --anim-seal-break: 220ms;
-    --anim-flap-open: 620ms;
-    --anim-letter-rise: 380ms;
-    --anim-letter-pause: 60ms;
-    --anim-classic-crossfade: 720ms;
-    --anim-fader-in: 520ms;
-    --anim-fader-out: 720ms;
     --anim-settle: 160ms;
-    --anim-romantic-flap: 620ms;
     --anim-gate-open: 2200ms;
     --anim-gate-clear: 350ms;
   }
-}
-
-body.is-touch .envelope-scene.is-dissolving .envelope__stage {
-  filter: none;
 }
 
 *,
@@ -115,43 +88,19 @@ textarea {
   color: inherit;
 }
 
-/* ——— Envelope scene ——— */
+/* ——— Envelope scene (gatefold) ——— */
 .envelope-scene {
   position: fixed;
   inset: 0;
   z-index: 100;
   display: grid;
   place-items: center;
-  background: var(--paper);
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
-}
-
-.envelope-atmosphere {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.2;
-  background-image:
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  transition: opacity 0.9s var(--ease-out);
-}
-
-.envelope-scene__glow,
-.envelope-scene__flash {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 4;
-}
-
-.envelope-scene__glow {
-  background: radial-gradient(ellipse 55% 45% at 50% 42%, rgba(255, 252, 245, 0.55), transparent 70%);
-}
-
-.envelope-scene__flash {
-  background: rgba(255, 252, 248, 0.72);
-  z-index: 6;
+  background: #f3ebe0;
+  transition: background 0.6s var(--ease-dissolve);
 }
 
 .envelope-hint {
@@ -165,6 +114,7 @@ textarea {
   font-style: italic;
   letter-spacing: 0.04em;
   color: var(--ink-soft);
+  opacity: 0.72;
   animation: hintPulse 2.6s ease-in-out infinite;
   transition: opacity 0.55s var(--ease-out), transform 0.7s var(--ease-out);
   z-index: 8;
@@ -176,7 +126,6 @@ textarea {
   50% { opacity: 1; }
 }
 
-/* ——— Envelope button & stage ——— */
 .envelope {
   position: absolute;
   inset: 0;
@@ -218,332 +167,33 @@ textarea {
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--paper);
+  background: transparent;
   transform-style: preserve-3d;
-  perspective: 1200px;
-  transition: transform 0.35s var(--ease-out);
 }
 
-.envelope__part {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  background: var(--paper);
-  pointer-events: none;
-  display: none;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-.envelope__interior { z-index: 1; opacity: 0; }
-.envelope__letter { z-index: 2; }
-.envelope__body { z-index: 3; }
-.envelope__flap {
-  z-index: 4;
-  clip-path: polygon(0 0, 100% 0, 50% 40.5%);
-  transform-origin: 50% 40.5%;
-  backface-visibility: hidden;
-  will-change: transform;
-  transition: transform var(--anim-flap-open) cubic-bezier(0.4, 0, 0.2, 1), z-index 0s var(--anim-flap-open);
-}
-
-body.anim-3d-cinema .envelope__part {
-  display: none;
-}
-
-body.anim-3d-cinema .envelope__open,
-body.anim-3d-cinema .envelope__closed {
-  display: none;
-}
-
-.envelope__open,
-.envelope__closed {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  background: var(--paper);
-  user-select: none;
-  pointer-events: none;
-  -webkit-user-drag: none;
-}
-
-.envelope__stage > picture,
-.envelope__frame {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  pointer-events: none;
-}
-
-.envelope__frame--open { z-index: 1; }
-.envelope__frame--closed { z-index: 2; }
-
-.envelope__open {
-  z-index: 1;
-  opacity: 0;
-  clip-path: inset(0 0 100% 0);
-  transition:
-    clip-path var(--anim-flap-open) var(--ease-out),
-    opacity var(--anim-classic-crossfade) var(--ease-out);
-}
-
-.envelope__closed {
-  z-index: 2;
-  opacity: 1;
-  transition:
-    opacity var(--anim-classic-crossfade) var(--ease-out),
-    clip-path var(--anim-flap-open) var(--ease-out),
-    filter 0.6s var(--ease-out);
-}
-
-.envelope:not(:disabled) .envelope__stage {
-  animation: envelopeBreathe 4.5s ease-in-out infinite;
-}
-
-.envelope:not(:disabled) .envelope__closed {
-  animation: none;
-}
-
-@keyframes envelopeBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.014); }
+.envelope:disabled {
+  cursor: default;
 }
 
 .envelope-scene.is-settling .envelope__stage,
-.envelope-scene.is-flap-opening .envelope__stage,
-.envelope-scene.is-gate-opening .envelope__stage,
-.envelope-scene.is-dissolving .envelope__stage {
+.envelope-scene.is-gate-opening .envelope__stage {
   animation: none;
 }
 
-.envelope-scene.is-dissolving .envelope__stage {
-  transform: scale(1.02);
-  opacity: 0.55;
-  filter: blur(1.5px);
-  transition:
-    opacity var(--anim-fader-in) var(--ease-dissolve),
-    transform var(--anim-fader-in) var(--ease-dissolve),
-    filter var(--anim-fader-in) var(--ease-dissolve);
+.envelope-scene.is-gate-opening .envelope,
+.envelope-scene.is-gate-open .envelope {
+  cursor: default;
 }
 
-/* Wax seal (SVG inline) */
-.envelope__seal {
-  position: absolute;
-  left: 50%;
-  top: 38%;
-  width: min(18vw, 72px);
-  height: min(18vw, 72px);
-  transform: translate(-50%, -50%);
-  z-index: 4;
-  pointer-events: none;
+.envelope-scene.is-gate-opening .envelope-hint,
+.envelope-scene.is-gate-open .envelope-hint {
   opacity: 0;
-  visibility: hidden;
-}
-
-.envelope__seal-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-  filter: drop-shadow(0 3px 6px rgba(58, 52, 44, 0.18));
-  transition: transform 0.3s var(--ease-out), opacity 0.3s ease;
-}
-
-.envelope__sparkle {
-  position: absolute;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--gold);
-  opacity: 0;
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
-}
-
-.envelope__sparkle--1 { top: 10%; left: 15%; }
-.envelope__sparkle--2 { top: 20%; right: 12%; }
-.envelope__sparkle--3 { bottom: 18%; left: 45%; }
-
-/* Letter card (cinematic) */
-.envelope__letter {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  width: min(42vw, 168px);
-  height: min(28vw, 112px);
-  transform: translate(-50%, 20%) scale(0.88) rotate(-2deg);
-  opacity: 0;
-  z-index: 3;
-  border-radius: 6px;
-  background:
-    linear-gradient(145deg, #fffef9 0%, var(--paper-deep) 55%, #f5ebe0 100%);
-  box-shadow: 0 8px 24px rgba(58, 52, 44, 0.14);
-  border: 1px solid rgba(58, 52, 44, 0.1);
-  display: grid;
-  place-items: center;
-  pointer-events: none;
-}
-
-.envelope__letter-monogram {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 5vw, 2rem);
-  color: var(--ink);
-  line-height: 1;
-}
-
-/* ——— Variant: Classic (default crossfade) ——— */
-body.anim-classic .envelope__open {
-  clip-path: none;
-  opacity: 0;
-}
-
-body.anim-classic .envelope-scene.is-flap-opening .envelope__closed {
   animation: none;
-  opacity: 0;
-  transition: opacity var(--anim-classic-crossfade) var(--ease-dissolve);
+  transform: translateX(-50%) translateY(18px);
 }
 
-body.anim-classic .envelope-scene.is-flap-opening .envelope__open {
-  opacity: 1;
-  transition: opacity var(--anim-classic-crossfade) var(--ease-dissolve);
-}
-
-body.anim-classic .envelope-scene.is-leaving {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity var(--anim-classic-leave) var(--ease-out), visibility var(--anim-classic-leave);
-}
-
-/* ——— Variant: Cinematic & Light (seal + clip-path) ——— */
-body.anim-cinematic .envelope__seal,
-body.anim-light .envelope__seal {
-  opacity: 1;
-  visibility: visible;
-}
-
-body.anim-cinematic .envelope__stage {
-  perspective: 900px;
-}
-
-body.anim-cinematic .envelope-scene.is-seal-breaking .envelope__seal-svg {
-  animation: sealCrack var(--anim-seal-break) var(--ease-out) forwards;
-}
-
-body.anim-light .envelope-scene.is-seal-breaking .envelope__seal-svg {
-  animation: sealCrack var(--anim-seal-break) ease-out forwards;
-}
-
-@keyframes sealCrack {
-  0% { transform: scale(1) rotate(0deg); opacity: 1; }
-  40% { transform: scale(1.05) rotate(-3deg); }
-  100% {
-    transform: scale(0.6) rotate(18deg) translateY(28px);
-    opacity: 0;
-  }
-}
-
-body.anim-light .envelope-scene.is-seal-breaking .envelope__sparkle {
-  animation: sparklePop 0.55s var(--ease-out) forwards;
-}
-
-@keyframes sparklePop {
-  0% { opacity: 0; transform: scale(0.5); }
-  35% { opacity: 1; transform: scale(1.4); }
-  100% { opacity: 0; transform: scale(0.8); }
-}
-
-body.anim-cinematic .envelope-scene.is-flap-opening .envelope__open,
-body.anim-light .envelope-scene.is-flap-opening .envelope__open,
-body.anim-romantic .envelope-scene.is-flap-opening .envelope__open {
-  clip-path: inset(0 0 0 0);
-  opacity: 1;
-}
-
-body.anim-cinematic .envelope-scene.is-flap-opening .envelope__closed,
-body.anim-light .envelope-scene.is-flap-opening .envelope__closed,
-body.anim-romantic .envelope-scene.is-flap-opening .envelope__closed {
-  animation: none;
-  opacity: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 18%, 50% 38%, 0 18%);
-  transition:
-    clip-path var(--anim-flap-open) var(--ease-out),
-    opacity calc(var(--anim-flap-open) * 0.6) var(--ease-out);
-}
-
-body.anim-romantic .envelope-scene.is-flap-opening .envelope__open {
-  transition-duration: var(--anim-romantic-flap);
-}
-
-body.anim-romantic .envelope-scene.is-flap-opening .envelope__closed {
-  transition-duration: var(--anim-romantic-flap);
-}
-
-/* ——— Variant: Cinematic (letter + zoom) ——— */
-body.anim-cinematic .envelope-scene.is-letter-rising .envelope__letter {
-  animation: letterRise var(--anim-letter-rise) var(--ease-spring) forwards;
-}
-
-@keyframes letterRise {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, 40%) scale(0.82) rotate(-4deg);
-    box-shadow: 0 4px 12px rgba(58, 52, 44, 0.08);
-  }
-  70% {
-    opacity: 1;
-    transform: translate(-50%, -8%) scale(1) rotate(2deg);
-    box-shadow: 0 16px 36px rgba(58, 52, 44, 0.16);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -12%) scale(1.02) rotate(1deg);
-    box-shadow: 0 20px 44px rgba(58, 52, 44, 0.18);
-  }
-}
-
-body.anim-cinematic .envelope-scene.is-zooming {
-  transform-origin: 50% 48%;
-  animation: sceneZoom var(--anim-scene-zoom) var(--ease-out) forwards;
-}
-
-@keyframes sceneZoom {
-  0% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.14); opacity: 0; }
-}
-
-body.anim-cinematic .invitation.is-revealed-zoom {
-  animation: invitationZoomIn var(--anim-scene-zoom) var(--ease-out) forwards;
-}
-
-@keyframes invitationZoomIn {
-  0% { opacity: 0; transform: scale(1.06); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-/* ——— Variant: 3D Gatefold (fullscreen peaked doors + ribbon) ——— */
+/* ——— 3D Gatefold ——— */
 .envelope-gate {
-  display: none;
-}
-
-body.anim-3d-cinema .envelope__seal,
-body.anim-3d-cinema .envelope__letter,
-body.anim-3d-cinema .envelope__part,
-body.anim-3d-cinema .envelope__frame {
-  display: none !important;
-}
-
-body.anim-3d-cinema .envelope:not(:disabled) .envelope__stage {
-  animation: none;
-}
-
-body.anim-3d-cinema .envelope-gate {
   display: block;
   position: absolute;
   inset: 0;
@@ -557,21 +207,7 @@ body.anim-3d-cinema .envelope-gate {
   pointer-events: none;
 }
 
-body.anim-3d-cinema .envelope__stage {
-  perspective: none;
-  background: transparent;
-}
-
-body.anim-3d-cinema .envelope-scene {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  background: #f3ebe0;
-  transition: background 0.6s var(--ease-dissolve);
-}
-
-body.anim-3d-cinema .envelope-gate__panel {
+.envelope-gate__panel {
   position: absolute;
   top: 0;
   width: 50%;
@@ -583,19 +219,19 @@ body.anim-3d-cinema .envelope-gate__panel {
   transition: transform var(--anim-gate-open) var(--ease-gate);
 }
 
-body.anim-3d-cinema .envelope-gate__panel--left {
+.envelope-gate__panel--left {
   left: 0;
   transform-origin: left center;
   transform: translateZ(0.1px) rotateY(0deg);
 }
 
-body.anim-3d-cinema .envelope-gate__panel--right {
+.envelope-gate__panel--right {
   right: 0;
   transform-origin: right center;
   transform: translateZ(0.1px) rotateY(0deg);
 }
 
-body.anim-3d-cinema .envelope-gate__face {
+.envelope-gate__face {
   position: relative;
   display: block;
   width: 100%;
@@ -605,15 +241,15 @@ body.anim-3d-cinema .envelope-gate__face {
   transform: translateZ(0);
 }
 
-body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face {
+.envelope-gate__panel--left .envelope-gate__face {
   box-shadow: inset -1px 0 0 rgba(58, 52, 44, 0.12);
 }
 
-body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face {
+.envelope-gate__panel--right .envelope-gate__face {
   box-shadow: inset 1px 0 0 rgba(58, 52, 44, 0.12);
 }
 
-body.anim-3d-cinema .envelope-gate__face::after {
+.envelope-gate__face::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -623,19 +259,15 @@ body.anim-3d-cinema .envelope-gate__face::after {
   z-index: 2;
 }
 
-body.anim-3d-cinema .envelope-gate__panel--left .envelope-gate__face::after {
+.envelope-gate__panel--left .envelope-gate__face::after {
   background: linear-gradient(90deg, transparent 45%, rgba(58, 52, 44, 0.14) 100%);
 }
 
-body.anim-3d-cinema .envelope-gate__panel--right .envelope-gate__face::after {
+.envelope-gate__panel--right .envelope-gate__face::after {
   background: linear-gradient(270deg, transparent 45%, rgba(58, 52, 44, 0.14) 100%);
 }
 
-body.anim-3d-cinema .envelope-atmosphere {
-  display: none;
-}
-
-body.anim-3d-cinema .envelope-gate__florals {
+.envelope-gate__florals {
   position: absolute;
   display: block;
   pointer-events: none;
@@ -651,26 +283,25 @@ body.anim-3d-cinema .envelope-gate__florals {
   filter: none;
 }
 
-body.anim-3d-cinema .envelope-gate__florals--tl {
+.envelope-gate__florals--tl {
   top: max(-3%, env(safe-area-inset-top, 0px) * -1);
   left: max(-5%, -22px);
   transform-origin: top left;
 }
 
-body.anim-3d-cinema .envelope-gate__florals--br {
+.envelope-gate__florals--br {
   right: max(-5%, -22px);
   bottom: max(-3%, env(safe-area-inset-bottom, 0px) * -1);
   transform-origin: bottom right;
 }
 
 @media (max-width: 820px) {
-  body.anim-3d-cinema .envelope-gate__florals {
+  .envelope-gate__florals {
     width: min(72vw, 320px);
   }
 }
 
-/* Sigillo cera lacca (asset fotorealistico) */
-body.anim-3d-cinema .envelope-gate__seal {
+.envelope-gate__seal {
   position: absolute;
   left: 50%;
   top: 48%;
@@ -684,7 +315,7 @@ body.anim-3d-cinema .envelope-gate__seal {
     transform calc(var(--anim-gate-open) * 0.28) ease-out;
 }
 
-body.anim-3d-cinema .envelope-gate__seal-wax {
+.envelope-gate__seal-wax {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -697,51 +328,39 @@ body.anim-3d-cinema .envelope-gate__seal-wax {
   pointer-events: none;
 }
 
-body.anim-3d-cinema .envelope-hint {
-  color: var(--ink-soft);
-  opacity: 0.72;
-}
-
-/* Opening: doors swing outward; site peeks through blurred */
-body.anim-3d-cinema .envelope-scene.is-gate-opening,
-body.anim-3d-cinema .envelope-scene.is-gate-open {
+.envelope-scene.is-gate-opening,
+.envelope-scene.is-gate-open {
   background: transparent;
   pointer-events: none;
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-atmosphere,
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-atmosphere {
-  opacity: 0;
-}
-
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__seal,
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__seal {
+.envelope-scene.is-gate-opening .envelope-gate__seal,
+.envelope-scene.is-gate-open .envelope-gate__seal {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.92);
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--left,
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--left {
+.envelope-scene.is-gate-opening .envelope-gate__panel--left,
+.envelope-scene.is-gate-open .envelope-gate__panel--left {
   transform: translateZ(0.1px) rotateY(-108deg);
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__panel--right,
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__panel--right {
+.envelope-scene.is-gate-opening .envelope-gate__panel--right,
+.envelope-scene.is-gate-open .envelope-gate__panel--right {
   transform: translateZ(0.1px) rotateY(108deg);
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate__face::after,
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate__face::after {
+.envelope-scene.is-gate-opening .envelope-gate__face::after,
+.envelope-scene.is-gate-open .envelope-gate__face::after {
   opacity: 1;
 }
 
-body.anim-3d-cinema .envelope-scene.is-gate-open .envelope-gate,
-body.anim-3d-cinema .envelope-scene.is-gate-opening .envelope-gate {
+.envelope-scene.is-gate-open .envelope-gate,
+.envelope-scene.is-gate-opening .envelope-gate {
   pointer-events: none;
 }
 
-/* Soft blur only — no scale so the reveal stays flat (no bounce) */
-body.anim-3d-cinema .invitation.is-revealed.is-gate-blurred {
+.invitation.is-revealed.is-gate-blurred {
   filter: blur(5px);
   transform: none;
   transition:
@@ -749,7 +368,7 @@ body.anim-3d-cinema .invitation.is-revealed.is-gate-blurred {
     filter var(--anim-gate-clear) ease-out;
 }
 
-body.anim-3d-cinema .invitation.is-revealed.is-gate-clear {
+.invitation.is-revealed.is-gate-clear {
   filter: blur(0);
   transform: none;
   transition:
@@ -758,102 +377,12 @@ body.anim-3d-cinema .invitation.is-revealed.is-gate-clear {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  body.anim-3d-cinema .envelope-gate__panel,
-  body.anim-3d-cinema .envelope-gate__seal,
-  body.anim-3d-cinema .invitation.is-revealed.is-gate-blurred,
-  body.anim-3d-cinema .invitation.is-revealed.is-gate-clear {
+  .envelope-gate__panel,
+  .envelope-gate__seal,
+  .invitation.is-revealed.is-gate-blurred,
+  .invitation.is-revealed.is-gate-clear {
     transition: none;
   }
-}
-
-/* ——— Variant: Romantic (glow + flash + slow) ——— */
-body.anim-romantic .envelope-scene.is-blooming .envelope-scene__glow {
-  opacity: 1;
-  transition: opacity 0.9s var(--ease-out);
-}
-
-body.anim-romantic .envelope-scene.is-flashing .envelope-scene__flash {
-  animation: romanticFlash var(--anim-romantic-flash) var(--ease-out) forwards;
-}
-
-@keyframes romanticFlash {
-  0% { opacity: 0; }
-  18% { opacity: 0.85; }
-  100% { opacity: 0; }
-}
-
-body.anim-romantic .envelope-scene.is-leaving {
-  transition-duration: var(--anim-romantic-leave);
-}
-
-/* ——— Shared opening / leaving states ——— */
-.envelope-scene.is-opening .envelope-hint,
-.envelope-scene.is-seal-breaking .envelope-hint,
-.envelope-scene.is-flap-opening .envelope-hint,
-.envelope-scene.is-gate-opening .envelope-hint,
-.envelope-scene.is-gate-open .envelope-hint {
-  opacity: 0;
-  animation: none;
-  transform: translateX(-50%) translateY(18px);
-}
-
-.envelope-scene.is-leaving {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity var(--anim-scene-leave) var(--ease-out), visibility var(--anim-scene-leave);
-}
-
-.envelope-scene.is-zooming {
-  pointer-events: none;
-}
-
-.envelope-scene.is-opening .envelope-atmosphere,
-.envelope-scene.is-leaving .envelope-atmosphere {
-  opacity: 0;
-}
-
-.envelope-scene.is-opening .envelope,
-.envelope-scene.is-seal-breaking .envelope,
-.envelope-scene.is-flap-opening .envelope,
-.envelope-scene.is-gate-opening .envelope {
-  cursor: default;
-}
-
-.envelope:disabled {
-  cursor: default;
-}
-
-/* Soft paper fader between envelope and invitation */
-.scene-fader {
-  position: fixed;
-  inset: 0;
-  z-index: 105;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  background:
-    radial-gradient(ellipse 72% 58% at 50% 40%, rgba(255, 252, 247, 0.72), transparent 70%),
-    linear-gradient(180deg, #fcf9f2 0%, #f7f1e6 100%);
-  transition:
-    opacity var(--anim-fader-in) var(--ease-dissolve),
-    visibility var(--anim-fader-in);
-  will-change: opacity;
-}
-
-.scene-fader.is-in {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-.scene-fader.is-out {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity var(--anim-fader-out) var(--ease-dissolve),
-    visibility var(--anim-fader-out);
 }
 
 /* Invitation reveal */
@@ -862,17 +391,13 @@ body.anim-romantic .envelope-scene.is-leaving {
   opacity: 0;
   transform: translateY(6px);
   transition:
-    opacity var(--anim-fader-out) var(--ease-dissolve),
-    transform var(--anim-fader-out) var(--ease-dissolve);
+    opacity var(--anim-invitation-reveal) var(--ease-dissolve),
+    transform var(--anim-invitation-reveal) var(--ease-dissolve);
 }
 
 .invitation.is-revealed {
   opacity: 1;
   transform: translateY(0);
-}
-
-body.anim-romantic .invitation.is-revealed {
-  transition-duration: calc(var(--anim-fader-out) * 1.1);
 }
 
 .invitation[hidden] {
@@ -929,63 +454,6 @@ body.has-opened .hero .ornament {
   animation: none !important;
   opacity: 1;
   transform: none;
-}
-
-/* ——— Debug switcher (?debug=1) ——— */
-.anim-debug {
-  position: fixed;
-  bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
-  left: max(0.75rem, env(safe-area-inset-left, 0px));
-  z-index: 200;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  align-items: center;
-  padding: 0.45rem 0.55rem;
-  border-radius: 8px;
-  background: rgba(252, 249, 242, 0.94);
-  border: 1px solid rgba(58, 52, 44, 0.14);
-  box-shadow: 0 6px 20px rgba(58, 52, 44, 0.12);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.anim-debug[hidden] {
-  display: none;
-}
-
-.anim-debug__label {
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  padding: 0 0.25rem;
-}
-
-.anim-debug__btn {
-  border: 1px solid rgba(58, 52, 44, 0.16);
-  background: transparent;
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  padding: 0.35rem 0.55rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-.anim-debug__btn:hover {
-  border-color: var(--terracotta);
-  color: var(--terracotta-deep);
-}
-
-.anim-debug__btn.is-active {
-  background: var(--terracotta-deep);
-  border-color: var(--terracotta-deep);
-  color: #fffaf3;
 }
 
 .hero {
@@ -1723,22 +1191,6 @@ body.has-opened .hero .ornament {
 
   .envelope-hint {
     opacity: 1 !important;
-  }
-
-  .envelope__seal,
-  .envelope__letter,
-  .envelope-scene__flash,
-  .envelope-scene__glow {
-    display: none !important;
-  }
-
-  .envelope__open {
-    clip-path: none !important;
-    opacity: 1 !important;
-  }
-
-  .envelope__closed {
-    display: none !important;
   }
 }
 

@@ -12,13 +12,9 @@
 
   const SHEETS_WEBAPP_URL = resolveEndpoint(SHEETS_ENDPOINT);
 
-  const ANIM_VARIANTS = ["classic", "cinematic", "light", "romantic", "3d-cinema"];
   const PREVIEW_SECTIONS = ["details", "rsvp", "portrait"];
 
   const params = new URLSearchParams(window.location.search);
-  const animParam = params.get("anim");
-  const anim = ANIM_VARIANTS.includes(animParam) ? animParam : "3d-cinema";
-  const debugMode = params.has("debug");
   const previewParam = params.get("preview");
   const previewSection = PREVIEW_SECTIONS.includes(previewParam) ? previewParam : null;
   const previewEnvelope = previewParam !== null && !previewSection;
@@ -26,9 +22,6 @@
 
   const scene = document.getElementById("envelopeScene");
   const envelope = document.getElementById("envelope");
-  const stage = document.getElementById("envelopeStage");
-  const sceneFader = document.getElementById("sceneFader");
-  const animDebug = document.getElementById("animDebug");
   const invitation = document.getElementById("invitation");
   const form = document.getElementById("rsvpForm");
   const success = document.getElementById("rsvpSuccess");
@@ -59,7 +52,6 @@
     return Math.min(1, Math.max(0, value));
   }
 
-  document.body.classList.add(`anim-${anim}`);
   if (isTouch) document.body.classList.add("is-touch");
 
   function hydrateDeferredSources(root = document) {
@@ -78,26 +70,7 @@
   }
 
   function prefetchInvitationAssets() {
-    hydrateDeferredSources(document.querySelector(".envelope__frame--open") || document);
     if (invitation) hydrateDeferredSources(invitation);
-  }
-
-  if (anim === "3d-cinema") {
-    hydrateDeferredSources(stage || document);
-  }
-
-  /* ——— Debug switcher (?debug=1) ——— */
-  if (debugMode && animDebug) {
-    animDebug.hidden = false;
-    animDebug.querySelectorAll(".anim-debug__btn").forEach((btn) => {
-      if (btn.dataset.anim === anim) btn.classList.add("is-active");
-      btn.addEventListener("click", () => {
-        const url = new URL(window.location.href);
-        url.searchParams.set("anim", btn.dataset.anim);
-        url.searchParams.set("debug", "1");
-        window.location.href = url.toString();
-      });
-    });
   }
 
   document.body.classList.add("is-locked");
@@ -268,46 +241,10 @@
     });
   }
 
-  /* ——— Cinematic 3D tilt (desktop only) ——— */
-  if (anim === "cinematic" && !isTouch && stage && envelope) {
-    envelope.addEventListener("mousemove", (event) => {
-      if (opened) return;
-      const rect = envelope.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - 0.5;
-      const y = (event.clientY - rect.top) / rect.height - 0.5;
-      const max =
-        parseFloat(
-          getComputedStyle(document.documentElement).getPropertyValue("--anim-tilt-max")
-        ) || 6;
-      stage.style.transform = `rotateY(${x * max * 2}deg) rotateX(${-y * max * 2}deg)`;
-    });
-
-    envelope.addEventListener("mouseleave", () => {
-      if (!opened) stage.style.transform = "";
-    });
-  }
-
-  function softStopBreathe() {
-    if (!stage) return;
-    const computed = getComputedStyle(stage).transform;
-    stage.style.animation = "none";
-    stage.style.transform = !computed || computed === "none" ? "scale(1)" : computed;
-    void stage.offsetWidth;
-    stage.style.transition = `transform ${parseMs("--anim-settle")}ms var(--ease-dissolve, ease-out)`;
-    stage.style.transform = "scale(1)";
-  }
-
-  function revealInvitation(zoom = false) {
-    invitation.hidden = false;
-    void invitation.offsetWidth;
-    invitation.classList.add(zoom ? "is-revealed-zoom" : "is-revealed");
-  }
-
   function finishOpen() {
     document.body.classList.add("has-opened");
     document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
-    if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     hydrateDeferredSources(invitation);
     observeReveals();
   }
@@ -318,85 +255,14 @@
     document.body.classList.add("has-opened");
     document.body.classList.remove("is-locked", "is-opening-envelope", "is-revealing-site");
     if (scene && scene.isConnected) scene.remove();
-    if (sceneFader && sceneFader.isConnected) sceneFader.remove();
     hydrateDeferredSources(invitation);
     observeReveals();
   }
 
-  async function transitionToSite() {
-    if (!sceneFader || reducedMotion) {
-      revealInvitation();
-      if (scene) {
-        scene.classList.add("is-leaving");
-        await wait(parseMs("--anim-scene-leave"));
-      }
-      finishOpen();
-      return;
-    }
-
-    invitation.hidden = false;
-    void invitation.offsetWidth;
-    prefetchInvitationAssets();
-
-    if (stage) {
-      stage.style.animation = "";
-      stage.style.transition = "";
-      stage.style.transform = "";
-    }
-    if (scene) scene.classList.add("is-dissolving");
-    sceneFader.classList.add("is-in");
-    await wait(parseMs("--anim-fader-in"));
-
-    if (scene) {
-      scene.style.visibility = "hidden";
-      scene.style.pointerEvents = "none";
-      scene.style.opacity = "0";
-    }
-
-    document.body.classList.add("is-revealing-site");
-    invitation.classList.add("is-revealed");
-    sceneFader.classList.remove("is-in");
-    sceneFader.classList.add("is-out");
-    await wait(parseMs("--anim-fader-out"));
-    finishOpen();
-  }
-
-  /* ——— Variant orchestration ——— */
-  async function runClassic() {
-    softStopBreathe();
-    scene.classList.add("is-settling");
-    await wait(parseMs("--anim-settle"));
-    scene.classList.add("is-flap-opening");
-    await wait(Math.round(parseMs("--anim-classic-crossfade") * 0.55));
-    await transitionToSite();
-  }
-
-  async function runLight() {
-    softStopBreathe();
-    scene.classList.add("is-settling", "is-seal-breaking");
-    await wait(parseMs("--anim-seal-break"));
-    scene.classList.add("is-flap-opening");
-    await wait(Math.round(parseMs("--anim-flap-open") * 0.6));
-    await transitionToSite();
-  }
-
-  async function runCinematic() {
-    softStopBreathe();
-    scene.classList.add("is-settling", "is-seal-breaking");
-    await wait(parseMs("--anim-seal-break"));
-    scene.classList.add("is-flap-opening");
-    await wait(parseMs("--anim-flap-open"));
-    scene.classList.add("is-letter-rising");
-    await wait(parseMs("--anim-letter-rise") + parseMs("--anim-letter-pause"));
-    await transitionToSite();
-  }
-
-  async function run3DCinema() {
-    softStopBreathe();
+  async function runGateOpen() {
     scene.classList.add("is-settling");
     await wait(parseMs("--anim-settle"));
 
-    // Invitation sits behind the gate; brief blur then clear while doors are still opening
     invitation.hidden = false;
     void invitation.offsetWidth;
     prefetchInvitationAssets();
@@ -418,14 +284,6 @@
     finishOpen();
   }
 
-  async function runRomantic() {
-    softStopBreathe();
-    scene.classList.add("is-settling", "is-blooming", "is-flap-opening");
-    await wait(Math.round(parseMs("--anim-romantic-flap") * 0.65));
-    scene.classList.add("is-flashing");
-    await transitionToSite();
-  }
-
   async function openEnvelope() {
     if (opened) return;
     opened = true;
@@ -439,12 +297,7 @@
     }
 
     document.body.classList.add("is-opening-envelope");
-
-    if (anim === "cinematic") await runCinematic();
-    else if (anim === "3d-cinema") await run3DCinema();
-    else if (anim === "light") await runLight();
-    else if (anim === "romantic") await runRomantic();
-    else await runClassic();
+    await runGateOpen();
   }
 
   envelope.addEventListener("click", openEnvelope);
