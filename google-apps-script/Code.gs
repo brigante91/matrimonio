@@ -1,62 +1,77 @@
-/**
- * RSVP → Google Sheet
- *
- * SETUP (una tantum):
- * 1. Crea un Google Sheet nuovo (es. "Matrimonio RSVP").
- * 2. Estensioni → Apps Script, cancella il codice e incolla QUESTO file.
- * 3. Salva, poi Distribuisci → Nuova distribuzione → tipo "App Web":
- *    - Esegui come: Me
- *    - Chi può accedere: Chiunque
- * 4. Copia l’URL della web app e incollalo in script.js
- *    nella costante SHEETS_WEBAPP_URL.
- * 5. Al primo invio viene creato il foglio "RSVP" con le intestazioni.
- */
-
 const SHEET_NAME = "RSVP";
 
 function doPost(e) {
+  const lock = LockService.getScriptLock();
+
   try {
+    lock.waitLock(10000);
+
     const data = JSON.parse(e.postData.contents);
     const sheet = getOrCreateSheet_();
 
+    const safeName = sanitizeInput_(data.name);
+    const safePhone = sanitizeInput_(data.phone);
+    const safeAttendance = sanitizeInput_(data.attendance);
+    const safeGuests = sanitizeInput_(data.guests);
+    const safeAllergies = sanitizeInput_(data.allergies);
+    const safeAllergyDetails = sanitizeInput_(data.allergyDetails);
+    const safeMessage = sanitizeInput_(data.message);
+
     sheet.appendRow([
       new Date(),
-      data.name || "",
-      data.phone || data.email || "",
-      data.attendance || "",
-      data.guests || "",
-      data.allergies === "si"
-        ? ("Sì" + (data.allergyDetails ? ": " + data.allergyDetails : ""))
-        : (data.allergies === "no" ? "No" : (data.menu || "")),
-      data.message || "",
+      safeName,
+      safePhone,
+      safeAttendance,
+      safeGuests,
+      safeAllergies,
+      safeAllergyDetails,
+      safeMessage,
     ]);
 
     return json_({ ok: true });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
   }
 }
 
 function doGet() {
-  return json_({ ok: true, message: "RSVP endpoint attivo" });
+  return json_({ ok: true, message: "RSVP endpoint attivo e protetto" });
 }
 
 function getOrCreateSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sheet = ss.getSheetByName(SHEET_NAME);
 
+  const headers = [
+    "Data",
+    "Nome",
+    "Telefono",
+    "Partecipa",
+    "Ospiti",
+    "Allergie",
+    "Dettaglio allergie",
+    "Messaggio",
+  ];
+
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow([
-      "Data",
-      "Nome",
-      "Telefono",
-      "Partecipa",
-      "Ospiti",
-      "Allergie",
-      "Messaggio",
-    ]);
+    sheet.appendRow(headers);
     sheet.setFrozenRows(1);
+    sheet.getRange("A2:A").setNumberFormat("dd/MM/yyyy HH:mm:ss");
+    return sheet;
+  }
+
+  // Aggiorna intestazioni se lo sheet esisteva con colonne vecchie (Email/Menu).
+  const firstRow = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  const needsHeaderUpdate = headers.some(function (header, i) {
+    return String(firstRow[i] || "") !== header;
+  });
+  if (needsHeaderUpdate) {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
+    sheet.getRange("A2:A").setNumberFormat("dd/MM/yyyy HH:mm:ss");
   }
 
   return sheet;
@@ -66,4 +81,18 @@ function json_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * Previene formula injection su Google Sheets.
+ * Se la stringa inizia con =, +, - o @, antepone un apostrofo.
+ */
+function sanitizeInput_(value) {
+  if (value === undefined || value === null) return "";
+
+  const str = String(value).trim();
+  if (/^[=+\-@]/.test(str)) {
+    return "'" + str;
+  }
+  return str;
 }
