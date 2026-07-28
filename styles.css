@@ -642,7 +642,7 @@ body.anim-3d-cinema .envelope-gate__florals {
   user-select: none;
   -webkit-user-drag: none;
   z-index: 1;
-  width: min(58vmin, 380px);
+  width: min(68vmin, 460px);
   height: auto;
   aspect-ratio: 1 / 1;
   object-fit: contain;
@@ -652,20 +652,20 @@ body.anim-3d-cinema .envelope-gate__florals {
 }
 
 body.anim-3d-cinema .envelope-gate__florals--tl {
-  top: max(-2%, env(safe-area-inset-top, 0px) * -1);
-  left: max(-4%, -18px);
+  top: max(-3%, env(safe-area-inset-top, 0px) * -1);
+  left: max(-5%, -22px);
   transform-origin: top left;
 }
 
 body.anim-3d-cinema .envelope-gate__florals--br {
-  right: max(-4%, -18px);
-  bottom: max(-2%, env(safe-area-inset-bottom, 0px) * -1);
+  right: max(-5%, -22px);
+  bottom: max(-3%, env(safe-area-inset-bottom, 0px) * -1);
   transform-origin: bottom right;
 }
 
 @media (max-width: 820px) {
   body.anim-3d-cinema .envelope-gate__florals {
-    width: min(62vw, 280px);
+    width: min(72vw, 320px);
   }
 }
 
