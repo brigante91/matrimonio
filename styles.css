@@ -648,7 +648,7 @@ body.anim-3d-cinema .envelope-gate__florals {
   object-fit: contain;
   object-position: center;
   max-width: none;
-  filter: drop-shadow(0 4px 12px rgba(90, 78, 62, 0.1));
+  filter: none;
 }
 
 body.anim-3d-cinema .envelope-gate__florals--tl {
