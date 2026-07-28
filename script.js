@@ -1,6 +1,6 @@
 (() => {
   const SHEETS_ENDPOINT =
-    "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6M3FtMDlHNXo4Y0p0Y1BObVJRX1pOTzFIMkgwN3hXZ1NXN2Myc3BITnhWWXRqVmhjeUFnUExhMklRVW1mb1FYRS0vZXhlYw==";
+    "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4UldoNVpLVXVpWjJmaGpKcTg1aWFHX2p1MXgyM0RyUE1Bbk5vb1Ztb19OZmpYQVdIdkh3ZmRKdUk0VTlfd2NSUjMvZXhlYw==";
 
   function resolveEndpoint(encoded) {
     try {
