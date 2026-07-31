@@ -615,6 +615,25 @@ body.has-opened .hero .ornament {
     font-size: clamp(8.5rem, 52vw, 14rem);
     transform: translate(-50%, -50%);
   }
+
+  .hero {
+    min-height: auto;
+    justify-content: flex-start;
+    padding-top: clamp(3rem, 10vh, 5rem);
+    padding-bottom: 1.75rem;
+  }
+
+  .hero__date {
+    margin-top: 2.25rem;
+  }
+
+  .countdown {
+    margin-top: 2rem;
+  }
+
+  .portrait {
+    padding-top: 2.25rem;
+  }
 }
 
 .countdown {
@@ -622,7 +641,7 @@ body.has-opened .hero .ornament {
   justify-content: center;
   align-items: flex-start;
   gap: clamp(0.85rem, 3.5vw, 1.6rem);
-  margin: 1.35rem 0 0;
+  margin: 2.75rem 0 0;
   animation: fadeUp 1s var(--ease-out) 0.48s both;
 }
 
