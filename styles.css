@@ -297,19 +297,29 @@ textarea {
 }
 
 @media (max-width: 820px) {
-  /* Keep florals inside each 50% panel so they aren't clipped at the seam */
+  /* Fit florals inside the 50% panel; scale from the outer corner
+     so the bouquet reads large without being sliced at the seam. */
   .envelope-gate__florals {
-    width: min(46vw, 210px);
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
   }
 
   .envelope-gate__florals--tl {
-    top: max(-1%, env(safe-area-inset-top, 0px) * -0.35);
-    left: max(-2%, -6px);
+    top: 0;
+    left: 0;
+    object-position: left top;
+    transform: scale(1.22);
+    transform-origin: top left;
   }
 
   .envelope-gate__florals--br {
-    right: max(-2%, -6px);
-    bottom: max(4px, env(safe-area-inset-bottom, 0px) * 0.35);
+    right: 0;
+    bottom: 0;
+    object-position: right bottom;
+    transform: scale(1.22);
+    transform-origin: bottom right;
   }
 
   .hero__names {
@@ -699,7 +709,7 @@ body.has-opened .hero .ornament {
   font-size: clamp(2.75rem, 8vw, 3.75rem);
   font-weight: 400;
   line-height: 1;
-  color: var(--glicine-deep);
+  color: var(--ink);
   text-align: center;
 }
 
