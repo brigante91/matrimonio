@@ -27,6 +27,7 @@
   --shadow: rgba(58, 52, 44, 0.14);
 
   --font-display: "Italianno", cursive;
+  --font-ampersand: "Tangerine", cursive;
   --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Outfit", system-ui, sans-serif;
 
@@ -539,8 +540,8 @@ body.has-opened .hero .ornament {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(92vw, 28rem);
-  padding: 0.35em 0.1em;
+  width: min(94vw, 30rem);
+  padding: 0.55em 0.15em;
   animation: fadeUp 1s var(--ease-out) 0.35s both;
 }
 
@@ -557,29 +558,29 @@ body.has-opened .hero .ornament {
 .hero__names .hero__name:first-child {
   align-self: flex-start;
   padding-left: 0.05em;
-  margin-bottom: 0.05em;
+  margin-bottom: -0.08em;
 }
 
 .hero__names .hero__name:last-child {
   align-self: flex-end;
   padding-right: 0.05em;
-  margin-top: 0.08em;
+  margin-top: -0.05em;
 }
 
 .hero__ampersand {
   position: absolute;
   left: 50%;
-  top: 52%;
+  top: 50%;
   z-index: 0;
   margin: 0;
-  font-family: var(--font-serif);
-  font-size: clamp(7.5rem, 34vw, 15rem);
-  font-weight: 500;
-  font-style: italic;
+  font-family: var(--font-ampersand);
+  font-size: clamp(10rem, 44vw, 20rem);
+  font-weight: 700;
+  font-style: normal;
   line-height: 0.75;
-  color: var(--sand);
-  opacity: 0.55;
-  transform: translate(-50%, -50%);
+  color: #d8c9b6;
+  opacity: 0.72;
+  transform: translate(-50%, -48%);
   pointer-events: none;
   user-select: none;
 }
