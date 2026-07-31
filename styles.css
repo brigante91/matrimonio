@@ -485,7 +485,6 @@ body.has-opened .hero .ornament {
   overflow: hidden;
   background:
     linear-gradient(180deg, rgba(201, 217, 232, 0.35) 0%, rgba(252, 249, 242, 0.55) 42%, var(--paper) 100%),
-    radial-gradient(ellipse 80% 55% at 50% 100%, rgba(230, 215, 192, 0.45), transparent 70%),
     var(--paper);
   background-size: cover;
   background-position: center;
@@ -604,7 +603,7 @@ body.has-opened .hero .ornament {
   position: relative;
   margin: 1.1rem 0 0;
   font-family: var(--font-serif);
-  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  font-size: clamp(1.35rem, 4vw, 1.85rem);
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--glicine-deep);
@@ -689,8 +688,7 @@ body.has-opened .hero .ornament {
   max-width: 36rem;
   text-align: center;
   background:
-    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(255, 252, 247, 0.75), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(182, 92, 58, 0.07), transparent 70%);
+    radial-gradient(ellipse 70% 55% at 50% 35%, rgba(255, 252, 247, 0.75), transparent 70%);
 }
 
 .portrait .section__title {
@@ -739,7 +737,7 @@ body.has-opened .hero .ornament {
 .portrait-frame__caption {
   margin: 1.35rem 0 0;
   font-family: var(--font-serif);
-  font-size: 1.05rem;
+  font-size: clamp(1.35rem, 3.5vw, 1.75rem);
   font-style: italic;
   color: var(--ink-soft);
 }
@@ -752,11 +750,6 @@ body.has-opened .hero .ornament {
   line-height: 1.65;
   text-align: center;
   color: var(--ink-soft);
-}
-
-.story {
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201, 217, 232, 0.28), transparent 70%);
 }
 
 .details {
@@ -786,7 +779,7 @@ body.has-opened .hero .ornament {
 .detail__heading {
   margin: 0;
   font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 3vw, 1.55rem);
+  font-size: clamp(1.5rem, 3vw, 1.55rem);
   font-weight: 500;
   color: var(--ink);
 }
@@ -794,9 +787,9 @@ body.has-opened .hero .ornament {
 .detail__meta {
   margin: 0.4rem 0 0;
   font-family: var(--font-serif);
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   font-style: italic;
-  color: var(--blush-deep);
+  color: var(--ink-soft);
 }
 
 .detail__place {
@@ -994,7 +987,6 @@ body.has-opened .hero .ornament {
 .footer {
   padding: 3rem 1.5rem 4rem;
   text-align: center;
-  border-top: 1px solid rgba(44, 36, 32, 0.08);
 }
 
 .footer__script {
