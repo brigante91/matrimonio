@@ -297,29 +297,25 @@ textarea {
 }
 
 @media (max-width: 820px) {
-  /* Fit florals inside the 50% panel; scale from the outer corner
-     so the bouquet reads large without being sliced at the seam. */
+  /* Keep floral box inside the 50% panel so the seam never slices the bouquet */
   .envelope-gate__florals {
     width: 100%;
     height: auto;
     aspect-ratio: 1 / 1;
     object-fit: contain;
+    transform: none;
   }
 
   .envelope-gate__florals--tl {
     top: 0;
     left: 0;
     object-position: left top;
-    transform: scale(1.22);
-    transform-origin: top left;
   }
 
   .envelope-gate__florals--br {
     right: 0;
     bottom: 0;
     object-position: right bottom;
-    transform: scale(1.22);
-    transform-origin: bottom right;
   }
 
   .hero__names {
