@@ -297,7 +297,17 @@ textarea {
 
 @media (max-width: 820px) {
   .envelope-gate__florals {
-    width: min(72vw, 320px);
+    width: min(64vw, 280px);
+  }
+
+  .envelope-gate__florals--tl {
+    top: max(-1%, env(safe-area-inset-top, 0px) * -0.35);
+    left: max(-2%, -8px);
+  }
+
+  .envelope-gate__florals--br {
+    right: max(-2%, -8px);
+    bottom: max(0px, env(safe-area-inset-bottom, 0px) * 0.25);
   }
 }
 
