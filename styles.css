@@ -620,7 +620,7 @@ body.has-opened .hero .ornament {
     min-height: auto;
     justify-content: flex-start;
     padding-top: clamp(3rem, 10vh, 5rem);
-    padding-bottom: 1.75rem;
+    padding-bottom: 0.5rem;
   }
 
   .hero__date {
@@ -629,10 +629,6 @@ body.has-opened .hero .ornament {
 
   .countdown {
     margin-top: 2rem;
-  }
-
-  .portrait {
-    padding-top: 2.25rem;
   }
 }
 
@@ -719,6 +715,13 @@ body.has-opened .hero .ornament {
   padding: clamp(4rem, 10vw, 7rem) clamp(1.5rem, 6vw, 3rem);
   max-width: 42rem;
   margin: 0 auto;
+}
+
+@media (max-width: 820px) {
+  .section.portrait {
+    padding-top: 1.25rem;
+    padding-bottom: clamp(3rem, 8vw, 5rem);
+  }
 }
 
 .section__title {
